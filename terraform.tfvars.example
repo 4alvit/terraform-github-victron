@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your values
+# terraform.tfvars is gitignored for security
+
+github_token        = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+github_organization = "victron-venus"
+billing_email       = "your-email@example.com"
+ghcr_token          = ""  # Optional: for GitHub Container Registry
