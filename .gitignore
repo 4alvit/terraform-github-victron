@@ -1,6 +1,7 @@
 # Terraform
 .terraform/
-.terraform.lock.hcl
+# Keep lock file for reproducibility
+# .terraform.lock.hcl
 *.tfstate
 *.tfstate.*
 *.tfvars
