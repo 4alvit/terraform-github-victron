@@ -26,6 +26,11 @@ output "repositories" {
       html_url = github_repository.esphome_jbd_bms_mqtt.html_url
       ssh_url  = github_repository.esphome_jbd_bms_mqtt.ssh_clone_url
     }
+    inverter_monitoring = {
+      name     = github_repository.inverter_monitoring.name
+      html_url = github_repository.inverter_monitoring.html_url
+      ssh_url  = github_repository.inverter_monitoring.ssh_clone_url
+    }
   }
 }
 

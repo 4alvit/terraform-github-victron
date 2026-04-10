@@ -178,6 +178,33 @@ resource "github_repository" "esphome_jbd_bms_mqtt" {
   license_template = "mit"
 }
 
+resource "github_repository" "inverter_monitoring" {
+  name        = "inverter-monitoring"
+  description = "Telegraf + InfluxDB + Grafana monitoring stack for Victron inverter systems"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = false
+
+  delete_branch_on_merge = false
+
+  vulnerability_alerts = true
+
+  topics = [
+    "cerbo-gx", "docker", "energy-monitoring", "grafana", "influxdb",
+    "iot", "mqtt", "telegraf", "time-series", "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
 # =============================================================================
 # Branch Protection Rules (optional - uncomment if needed)
 # =============================================================================
@@ -221,6 +248,11 @@ resource "github_repository_dependabot_security_updates" "dbus_tasmota_pv" {
 
 resource "github_repository_dependabot_security_updates" "esphome_jbd_bms_mqtt" {
   repository = github_repository.esphome_jbd_bms_mqtt.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "inverter_monitoring" {
+  repository = github_repository.inverter_monitoring.id
   enabled    = true
 }
 
