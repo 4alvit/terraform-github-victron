@@ -97,6 +97,33 @@ resource "github_repository" "inverter_dashboard" {
   license_template = "mit"
 }
 
+resource "github_repository" "inverter_dashboard_go" {
+  name        = "inverter-dashboard-go"
+  description = "Real-time Victron inverter web dashboard (Go) — same role as inverter-dashboard, implemented in Go with MQTT and optional Home Assistant direct control"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = false
+
+  delete_branch_on_merge = false
+
+  vulnerability_alerts = true
+
+  topics = [
+    "cerbo-gx", "dashboard", "docker", "go", "golang", "hass", "home-assistant",
+    "mqtt", "real-time", "venus-os", "victron", "websocket"
+  ]
+
+  license_template = "mit"
+}
+
 resource "github_repository" "dbus_mqtt_battery" {
   name        = "dbus-mqtt-battery"
   description = "MQTT to D-Bus bridge for JBD BMS batteries on Victron Venus OS with DVCC support"
@@ -233,6 +260,11 @@ resource "github_repository_dependabot_security_updates" "inverter_control" {
 
 resource "github_repository_dependabot_security_updates" "inverter_dashboard" {
   repository = github_repository.inverter_dashboard.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "inverter_dashboard_go" {
+  repository = github_repository.inverter_dashboard_go.id
   enabled    = true
 }
 

@@ -11,6 +11,11 @@ output "repositories" {
       html_url = github_repository.inverter_dashboard.html_url
       ssh_url  = github_repository.inverter_dashboard.ssh_clone_url
     }
+    inverter_dashboard_go = {
+      name     = github_repository.inverter_dashboard_go.name
+      html_url = github_repository.inverter_dashboard_go.html_url
+      ssh_url  = github_repository.inverter_dashboard_go.ssh_clone_url
+    }
     dbus_mqtt_battery = {
       name     = github_repository.dbus_mqtt_battery.name
       html_url = github_repository.dbus_mqtt_battery.html_url

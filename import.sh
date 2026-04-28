@@ -16,6 +16,7 @@ terraform import github_organization_settings.victron_venus victron-venus || tru
 echo "Importing repositories..."
 terraform import github_repository.inverter_control inverter-control || true
 terraform import github_repository.inverter_dashboard inverter-dashboard || true
+terraform import github_repository.inverter_dashboard_go inverter-dashboard-go || true
 terraform import github_repository.dbus_mqtt_battery dbus-mqtt-battery || true
 terraform import github_repository.dbus_tasmota_pv dbus-tasmota-pv || true
 terraform import github_repository.esphome_jbd_bms_mqtt esphome-jbd-bms-mqtt || true

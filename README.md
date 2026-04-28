@@ -5,9 +5,10 @@ This Terraform configuration manages the entire GitHub infrastructure for the vi
 ## What's Managed
 
 - **Organization settings** (security defaults, permissions)
-- **5 Repositories** with full configuration:
+- **Repositories** with full configuration (subset listed below — see `main.tf` for all):
   - `inverter-control`
   - `inverter-dashboard`
+  - `inverter-dashboard-go` (Go rewrite / sibling of `inverter-dashboard`)
   - `dbus-mqtt-battery`
   - `dbus-tasmota-pv`
   - `esphome-jbd-bms-mqtt`
@@ -75,6 +76,7 @@ terraform import github_organization_settings.victron_venus victron-venus
 # Import repositories
 terraform import github_repository.inverter_control inverter-control
 terraform import github_repository.inverter_dashboard inverter-dashboard
+terraform import github_repository.inverter_dashboard_go inverter-dashboard-go
 terraform import github_repository.dbus_mqtt_battery dbus-mqtt-battery
 terraform import github_repository.dbus_tasmota_pv dbus-tasmota-pv
 terraform import github_repository.esphome_jbd_bms_mqtt esphome-jbd-bms-mqtt
@@ -127,6 +129,7 @@ terraform destroy
 
 - [inverter-control](https://github.com/victron-venus/inverter-control)
 - [inverter-dashboard](https://github.com/victron-venus/inverter-dashboard)
+- [inverter-dashboard-go](https://github.com/victron-venus/inverter-dashboard-go)
 - [dbus-mqtt-battery](https://github.com/victron-venus/dbus-mqtt-battery)
 - [dbus-tasmota-pv](https://github.com/victron-venus/dbus-tasmota-pv)
 - [esphome-jbd-bms-mqtt](https://github.com/victron-venus/esphome-jbd-bms-mqtt)
