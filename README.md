@@ -1,5 +1,13 @@
 # Victron Venus GitHub Infrastructure as Code
 
+[![CI](https://github.com/victron-venus/terraform-github/actions/workflows/ci.yml/badge.svg)](https://github.com/victron-venus/terraform-github/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub stars](https://img.shields.io/github/stars/victron-venus/terraform-github)](https://github.com/victron-venus/terraform-github/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/victron-venus/terraform-github)](https://github.com/victron-venus/terraform-github/network/members)
+[![GitHub last commit](https://img.shields.io/github/last-commit/victron-venus/terraform-github)](https://github.com/victron-venus/terraform-github/commits/main)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/victron-venus/terraform-github/graphs/commit-activity)
+[![Terraform](https://img.shields.io/badge/Terraform-1.0+-blue.svg)](https://www.terraform.io/)
+
 This Terraform configuration manages the entire GitHub infrastructure for the victron-venus organization.
 
 ## What's Managed
@@ -133,3 +141,24 @@ terraform destroy
 - [dbus-mqtt-battery](https://github.com/victron-venus/dbus-mqtt-battery)
 - [dbus-tasmota-pv](https://github.com/victron-venus/dbus-tasmota-pv)
 - [esphome-jbd-bms-mqtt](https://github.com/victron-venus/esphome-jbd-bms-mqtt)
+
+## License
+
+MIT License
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature-name`)
+3. Commit your changes
+4. Push to the branch (`git push origin feature-name`)
+5. Create a Pull Request
+
+## Support
+
+For issues specific to:
+- **Terraform**: See [Terraform documentation](https://www.terraform.io/docs)
+- **GitHub API**: See [GitHub REST API documentation](https://docs.github.com/en/rest)
+- **This Terrafor configuration**: Open an issue in this repository
+
+**Note:** This is a community project and is not affiliated with Victron Energy.
