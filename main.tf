@@ -259,6 +259,48 @@ resource "github_repository" "inverter_monitoring" {
   license_template = "mit"
 }
 
+resource "github_repository" "github_org" {
+  name        = ".github"
+  description = "Organization profile and community resources"
+  visibility  = "public"
+
+  has_issues      = false
+  has_projects    = false
+  has_wiki        = false
+  has_discussions = false
+
+  allow_merge_commit = false
+  allow_squash_merge = true
+  allow_rebase_merge = false
+  allow_auto_merge   = false
+
+  delete_branch_on_merge = false
+
+  vulnerability_alerts = false
+
+  topics = [
+    "organization", "victron", "venus-os", "community"
+  ]
+}
+
+resource "github_repository_file" "github_org_readme" {
+  repository = github_repository.github_org.name
+  branch     = "main"
+  file       = "profile/README.md"
+  content    = file("${path.module}/files/github_org/profile/README.md")
+
+  depends_on = [github_repository.github_org]
+}
+
+resource "github_repository_file" "github_org_gitignore" {
+  repository = github_repository.github_org.name
+  branch     = "main"
+  file       = ".gitignore"
+  content    = file("${path.module}/files/github_org/.gitignore")
+
+  depends_on = [github_repository.github_org]
+}
+
 # =============================================================================
 # Branch Protection Rules (optional - uncomment if needed)
 # =============================================================================
