@@ -16,7 +16,6 @@ This Terraform configuration manages the entire GitHub infrastructure for the vi
 - **Repositories** with full configuration (subset listed below — see `main.tf` for all):
   - `inverter-control`
   - `inverter-dashboard`
-  - `inverter-dashboard-go` (Go rewrite / sibling of `inverter-dashboard`)
   - `dbus-mqtt-battery`
   - `dbus-tasmota-pv`
   - `esphome-jbd-bms-mqtt`
@@ -137,7 +136,6 @@ terraform destroy
 
 - [inverter-control](https://github.com/victron-venus/inverter-control)
 - [inverter-dashboard](https://github.com/victron-venus/inverter-dashboard)
-- [inverter-dashboard-go](https://github.com/victron-venus/inverter-dashboard-go)
 - [dbus-mqtt-battery](https://github.com/victron-venus/dbus-mqtt-battery)
 - [dbus-tasmota-pv](https://github.com/victron-venus/dbus-tasmota-pv)
 - [esphome-jbd-bms-mqtt](https://github.com/victron-venus/esphome-jbd-bms-mqtt)
