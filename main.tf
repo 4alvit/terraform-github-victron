@@ -100,7 +100,7 @@ resource "github_repository" "inverter_dashboard" {
 resource "github_repository" "inverter_dashboard_go" {
   name        = "inverter-dashboard-go"
   description = "Real-time Victron inverter web dashboard (Go) — same role as inverter-dashboard, implemented in Go with MQTT and optional Home Assistant direct control"
-  visibility  = "public"
+  visibility  = "private"
 
   has_issues      = true
   has_projects    = true
@@ -119,6 +119,33 @@ resource "github_repository" "inverter_dashboard_go" {
   topics = [
     "cerbo-gx", "dashboard", "docker", "go", "golang", "hass", "home-assistant",
     "mqtt", "real-time", "venus-os", "victron", "websocket"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository" "inverter_desktop" {
+  name        = "inverter-desktop"
+  description = "Web dashboard for Victron inverter control with Home Assistant integration"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = false
+
+  delete_branch_on_merge = false
+
+  vulnerability_alerts = true
+
+  topics = [
+    "cerbo-gx", "dashboard", "energy-management", "grid-tie", "hass",
+    "home-assistant", "mqtt", "venus-os", "victron", "web-dashboard"
   ]
 
   license_template = "mit"
@@ -265,6 +292,11 @@ resource "github_repository_dependabot_security_updates" "inverter_dashboard" {
 
 resource "github_repository_dependabot_security_updates" "inverter_dashboard_go" {
   repository = github_repository.inverter_dashboard_go.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "inverter_desktop" {
+  repository = github_repository.inverter_desktop.id
   enabled    = true
 }
 
