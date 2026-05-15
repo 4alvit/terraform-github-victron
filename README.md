@@ -83,7 +83,6 @@ terraform import github_organization_settings.victron_venus victron-venus
 # Import repositories
 terraform import github_repository.inverter_control inverter-control
 terraform import github_repository.inverter_dashboard inverter-dashboard
-terraform import github_repository.inverter_dashboard_go inverter-dashboard-go
 terraform import github_repository.dbus_mqtt_battery dbus-mqtt-battery
 terraform import github_repository.dbus_tasmota_pv dbus-tasmota-pv
 terraform import github_repository.esphome_jbd_bms_mqtt esphome-jbd-bms-mqtt
