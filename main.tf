@@ -1,4 +1,5 @@
 terraform {
+
   required_version = ">= 1.0"
 
   # Remote state storage in Terraform Cloud (free tier)
@@ -55,9 +56,9 @@ resource "github_repository" "inverter_control" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -85,7 +86,7 @@ resource "github_repository" "inverter_dashboard" {
   allow_rebase_merge = true
   allow_auto_merge   = false
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -100,7 +101,7 @@ resource "github_repository" "inverter_dashboard" {
 resource "github_repository" "inverter_dashboard_go" {
   name        = "inverter-dashboard-go"
   description = "Real-time Victron inverter web dashboard (Go) — same role as inverter-dashboard, implemented in Go with MQTT and optional Home Assistant direct control"
-  visibility  = "private"
+  visibility  = "public"
 
   has_issues      = true
   has_projects    = true
@@ -110,9 +111,9 @@ resource "github_repository" "inverter_dashboard_go" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -126,7 +127,7 @@ resource "github_repository" "inverter_dashboard_go" {
 
 resource "github_repository" "inverter_desktop" {
   name        = "inverter-desktop"
-  description = "Web dashboard for Victron inverter control with Home Assistant integration"
+  description = "Desktop version of Web dashboard for Victron inverter control with Home Assistant integration"
   visibility  = "public"
 
   has_issues      = true
@@ -137,9 +138,9 @@ resource "github_repository" "inverter_desktop" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -164,9 +165,9 @@ resource "github_repository" "dbus_mqtt_battery" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -191,9 +192,9 @@ resource "github_repository" "dbus_tasmota_pv" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -218,9 +219,10 @@ resource "github_repository" "esphome_jbd_bms_mqtt" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
+
 
   vulnerability_alerts = true
 
@@ -245,9 +247,9 @@ resource "github_repository" "inverter_monitoring" {
   allow_merge_commit = true
   allow_squash_merge = true
   allow_rebase_merge = true
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = true
 
@@ -272,9 +274,9 @@ resource "github_repository" "github_org" {
   allow_merge_commit = false
   allow_squash_merge = true
   allow_rebase_merge = false
-  allow_auto_merge   = false
+  allow_auto_merge   = true
 
-  delete_branch_on_merge = false
+  delete_branch_on_merge = true
 
   vulnerability_alerts = false
 
