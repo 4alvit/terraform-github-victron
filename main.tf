@@ -304,21 +304,63 @@ resource "github_repository_file" "github_org_gitignore" {
 }
 
 # =============================================================================
-# Branch Protection Rules (optional - uncomment if needed)
+# Repositories (External to Org)
 # =============================================================================
-# Note: Branch protection requires GitHub Pro or public repos with specific settings.
-# Uncomment and customize as needed.
-#
-# resource "github_branch_protection" "inverter_control_main" {
-#   repository_id = github_repository.inverter_control.node_id
-#   pattern       = "main"
-#   required_status_checks {
-#     strict   = true
-#     contexts = ["Analyze"]
-#   }
-#   allows_deletions    = false
-#   allows_force_pushes = false
-# }
+
+# =============================================================================
+# Branch Protection Rules
+# =============================================================================
+
+locals {
+  protected_repos = {
+    "inverter_control"         = github_repository.inverter_control.node_id
+    "inverter_dashboard"       = github_repository.inverter_dashboard.node_id
+    "inverter_dashboard_go"    = github_repository.inverter_dashboard_go.node_id
+    "dbus_mqtt_battery"        = github_repository.dbus_mqtt_battery.node_id
+    "dbus_tasmota_pv"          = github_repository.dbus_tasmota_pv.node_id
+    "esphome_jbd_bms_mqtt"     = github_repository.esphome_jbd_bms_mqtt.node_id
+    "inverter_monitoring"      = github_repository.inverter_monitoring.node_id
+    "github_org"               = github_repository.github_org.node_id
+  }
+}
+
+resource "github_branch_protection" "main" {
+  for_each      = local.protected_repos
+  repository_id = each.value
+  pattern       = "main"
+
+  enforce_admins                  = false
+  allows_deletions                = false
+  allows_force_pushes             = false
+  require_conversation_resolution = true
+  require_signed_commits          = true
+
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = true
+    required_approving_review_count = 1
+  }
+}
+
+resource "github_branch_protection" "inverter_desktop" {
+  repository_id = github_repository.inverter_desktop.node_id
+  pattern       = "main"
+
+  enforce_admins                  = false
+  allows_deletions                = false
+  allows_force_pushes             = false
+  require_conversation_resolution = true
+  require_signed_commits          = true
+
+  required_status_checks {
+    strict   = true
+    contexts = ["cargo-audit", "frontend", "rust", "vitest"]
+  }
+
+  required_pull_request_reviews {
+    dismiss_stale_reviews           = true
+    required_approving_review_count = 1
+  }
+}
 
 # =============================================================================
 # Repository Security Settings
