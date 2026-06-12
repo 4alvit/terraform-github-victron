@@ -17,16 +17,24 @@ echo "Importing repositories..."
 terraform import github_repository.inverter_control inverter-control || true
 terraform import github_repository.inverter_dashboard inverter-dashboard || true
 terraform import github_repository.inverter_dashboard_go inverter-dashboard-go || true
+terraform import github_repository.inverter_desktop inverter-desktop || true
 terraform import github_repository.dbus_mqtt_battery dbus-mqtt-battery || true
 terraform import github_repository.dbus_tasmota_pv dbus-tasmota-pv || true
 terraform import github_repository.esphome_jbd_bms_mqtt esphome-jbd-bms-mqtt || true
+terraform import github_repository.inverter_monitoring inverter-monitoring || true
+terraform import github_repository.github_org .github || true
 
 # Branch protection rules
 echo "Importing branch protection rules..."
-terraform import github_branch_protection.inverter_control_main inverter-control:main || true
-terraform import github_branch_protection.inverter_dashboard_main inverter-dashboard:main || true
-terraform import github_branch_protection.dbus_mqtt_battery_main dbus-mqtt-battery:main || true
-terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:main || true
+terraform import 'github_branch_protection.main["inverter_control"]' inverter-control:main || true
+terraform import 'github_branch_protection.main["inverter_dashboard"]' inverter-dashboard:main || true
+terraform import 'github_branch_protection.main["inverter_dashboard_go"]' inverter-dashboard-go:main || true
+terraform import 'github_branch_protection.main["inverter_desktop"]' inverter-desktop:main || true
+terraform import 'github_branch_protection.main["dbus_mqtt_battery"]' dbus-mqtt-battery:main || true
+terraform import 'github_branch_protection.main["dbus_tasmota_pv"]' dbus-tasmota-pv:main || true
+terraform import 'github_branch_protection.main["esphome_jbd_bms_mqtt"]' esphome-jbd-bms-mqtt:main || true
+terraform import 'github_branch_protection.main["inverter_monitoring"]' inverter-monitoring:main || true
+terraform import 'github_branch_protection.main["github_org"]' .github:main || true
 
 echo ""
 echo "=== Import complete ==="
