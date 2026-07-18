@@ -1,6 +1,6 @@
 terraform {
 
-  required_version = ">= 1.0"
+  required_version = ">= 1.15.7"
 
   # Remote state storage in Terraform Cloud (free tier)
   # Comment out this block for local state during initial setup
@@ -60,7 +60,6 @@ resource "github_repository" "inverter_control" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "cerbo-gx", "dbus", "emporia-vue", "energy-management", "ess",
@@ -69,6 +68,11 @@ resource "github_repository" "inverter_control" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "inverter_control" {
+  repository = github_repository.inverter_control.name
+  depends_on = [github_repository.inverter_control]
 }
 
 resource "github_repository" "inverter_dashboard" {
@@ -88,7 +92,6 @@ resource "github_repository" "inverter_dashboard" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "cerbo-gx", "dashboard", "docker", "fastapi", "mqtt", "python",
@@ -96,6 +99,11 @@ resource "github_repository" "inverter_dashboard" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "inverter_dashboard" {
+  repository = github_repository.inverter_dashboard.name
+  depends_on = [github_repository.inverter_dashboard]
 }
 
 resource "github_repository" "inverter_dashboard_go" {
@@ -115,7 +123,6 @@ resource "github_repository" "inverter_dashboard_go" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "cerbo-gx", "dashboard", "docker", "go", "golang", "hass", "home-assistant",
@@ -123,6 +130,11 @@ resource "github_repository" "inverter_dashboard_go" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "inverter_dashboard_go" {
+  repository = github_repository.inverter_dashboard_go.name
+  depends_on = [github_repository.inverter_dashboard_go]
 }
 
 resource "github_repository" "inverter_desktop" {
@@ -142,7 +154,6 @@ resource "github_repository" "inverter_desktop" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "cerbo-gx", "dashboard", "energy-management", "grid-tie", "hass",
@@ -150,6 +161,11 @@ resource "github_repository" "inverter_desktop" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "inverter_desktop" {
+  repository = github_repository.inverter_desktop.name
+  depends_on = [github_repository.inverter_desktop]
 }
 
 resource "github_repository" "dbus_mqtt_battery" {
@@ -169,7 +185,6 @@ resource "github_repository" "dbus_mqtt_battery" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "battery-management", "bms", "cerbo-gx", "dbus", "dvcc",
@@ -177,6 +192,11 @@ resource "github_repository" "dbus_mqtt_battery" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_mqtt_battery" {
+  repository = github_repository.dbus_mqtt_battery.name
+  depends_on = [github_repository.dbus_mqtt_battery]
 }
 
 resource "github_repository" "dbus_tasmota_pv" {
@@ -196,7 +216,6 @@ resource "github_repository" "dbus_tasmota_pv" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "dbus", "mqtt", "pv-inverter", "python", "solar",
@@ -204,6 +223,11 @@ resource "github_repository" "dbus_tasmota_pv" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_tasmota_pv" {
+  repository = github_repository.dbus_tasmota_pv.name
+  depends_on = [github_repository.dbus_tasmota_pv]
 }
 
 resource "github_repository" "esphome_jbd_bms_mqtt" {
@@ -224,7 +248,6 @@ resource "github_repository" "esphome_jbd_bms_mqtt" {
   delete_branch_on_merge = true
 
 
-  vulnerability_alerts = true
 
   topics = [
     "battery-monitor", "bluetooth", "cerbo-gx", "esp32", "esphome",
@@ -232,6 +255,11 @@ resource "github_repository" "esphome_jbd_bms_mqtt" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "esphome_jbd_bms_mqtt" {
+  repository = github_repository.esphome_jbd_bms_mqtt.name
+  depends_on = [github_repository.esphome_jbd_bms_mqtt]
 }
 
 resource "github_repository" "inverter_monitoring" {
@@ -251,7 +279,6 @@ resource "github_repository" "inverter_monitoring" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = true
 
   topics = [
     "cerbo-gx", "docker", "energy-monitoring", "grafana", "influxdb",
@@ -259,6 +286,41 @@ resource "github_repository" "inverter_monitoring" {
   ]
 
   license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "inverter_monitoring" {
+  repository = github_repository.inverter_monitoring.name
+  depends_on = [github_repository.inverter_monitoring]
+}
+
+resource "github_repository" "integration_tests" {
+  name        = "integration-tests"
+  description = "Integration tests for Victron Venus OS projects"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "ci", "integration-tests", "testing", "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "integration_tests" {
+  repository = github_repository.integration_tests.name
+  depends_on = [github_repository.integration_tests]
 }
 
 resource "github_repository" "github_org" {
@@ -278,7 +340,6 @@ resource "github_repository" "github_org" {
 
   delete_branch_on_merge = true
 
-  vulnerability_alerts = false
 
   topics = [
     "organization", "victron", "venus-os", "community"
@@ -313,14 +374,15 @@ resource "github_repository_file" "github_org_gitignore" {
 
 locals {
   protected_repos = {
-    "inverter_control"         = github_repository.inverter_control.node_id
-    "inverter_dashboard"       = github_repository.inverter_dashboard.node_id
-    "inverter_dashboard_go"    = github_repository.inverter_dashboard_go.node_id
-    "dbus_mqtt_battery"        = github_repository.dbus_mqtt_battery.node_id
-    "dbus_tasmota_pv"          = github_repository.dbus_tasmota_pv.node_id
-    "esphome_jbd_bms_mqtt"     = github_repository.esphome_jbd_bms_mqtt.node_id
-    "inverter_monitoring"      = github_repository.inverter_monitoring.node_id
-    "github_org"               = github_repository.github_org.node_id
+    "inverter_control"      = github_repository.inverter_control.node_id
+    "inverter_dashboard"    = github_repository.inverter_dashboard.node_id
+    "inverter_dashboard_go" = github_repository.inverter_dashboard_go.node_id
+    "dbus_mqtt_battery"     = github_repository.dbus_mqtt_battery.node_id
+    "dbus_tasmota_pv"       = github_repository.dbus_tasmota_pv.node_id
+    "esphome_jbd_bms_mqtt"  = github_repository.esphome_jbd_bms_mqtt.node_id
+    "inverter_monitoring"   = github_repository.inverter_monitoring.node_id
+    "integration_tests"     = github_repository.integration_tests.node_id
+    "github_org"            = github_repository.github_org.node_id
   }
 }
 
@@ -403,6 +465,11 @@ resource "github_repository_dependabot_security_updates" "esphome_jbd_bms_mqtt" 
 
 resource "github_repository_dependabot_security_updates" "inverter_monitoring" {
   repository = github_repository.inverter_monitoring.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "integration_tests" {
+  repository = github_repository.integration_tests.id
   enabled    = true
 }
 
