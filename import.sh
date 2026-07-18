@@ -22,7 +22,12 @@ terraform import github_repository.dbus_mqtt_battery dbus-mqtt-battery || true
 terraform import github_repository.dbus_tasmota_pv dbus-tasmota-pv || true
 terraform import github_repository.esphome_jbd_bms_mqtt esphome-jbd-bms-mqtt || true
 terraform import github_repository.inverter_monitoring inverter-monitoring || true
+terraform import github_repository.integration_tests integration-tests || true
 terraform import github_repository.github_org .github || true
+
+# Dependabot
+echo "Importing Dependabot security updates..."
+terraform import github_repository_dependabot_security_updates.integration_tests victron-venus/integration-tests || true
 
 # Branch protection rules
 echo "Importing branch protection rules..."
@@ -34,6 +39,7 @@ terraform import 'github_branch_protection.main["dbus_mqtt_battery"]' dbus-mqtt-
 terraform import 'github_branch_protection.main["dbus_tasmota_pv"]' dbus-tasmota-pv:main || true
 terraform import 'github_branch_protection.main["esphome_jbd_bms_mqtt"]' esphome-jbd-bms-mqtt:main || true
 terraform import 'github_branch_protection.main["inverter_monitoring"]' inverter-monitoring:main || true
+terraform import 'github_branch_protection.main["integration_tests"]' integration-tests:main || true
 terraform import 'github_branch_protection.main["github_org"]' .github:main || true
 
 echo ""
