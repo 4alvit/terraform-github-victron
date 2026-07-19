@@ -369,58 +369,133 @@ resource "github_repository_file" "github_org_gitignore" {
 # =============================================================================
 
 # =============================================================================
-# Branch Protection Rules
+# Branch Protection Rulesets
 # =============================================================================
 
+data "github_app" "gitar" {
+  slug = "gitar-bot"
+}
+
+resource "github_repository_ruleset" "default" {
+  name        = "Default"
+  repository  = "inverter-desktop"
+  target      = "branch"
+  enforcement = "active"
+
+  bypass_actors {
+    actor_id    = 5
+    actor_type  = "RepositoryRole"
+    bypass_mode = "always"
+  }
+
+  bypass_actors {
+    actor_id    = data.github_app.gitar.id
+    actor_type  = "Integration"
+    bypass_mode = "always"
+  }
+
+  conditions {
+    ref_name {
+      include = ["~DEFAULT_BRANCH"]
+      exclude = []
+    }
+  }
+
+  rules {
+    deletion            = true
+    non_fast_forward    = true
+    required_signatures = true
+
+    copilot_code_review {
+      review_draft_pull_requests = true
+      review_on_push             = true
+    }
+
+    pull_request {
+      allowed_merge_methods             = ["merge", "squash", "rebase"]
+      dismiss_stale_reviews_on_push     = false
+      require_code_owner_review         = true
+      require_last_push_approval        = true
+      required_approving_review_count   = 1
+      required_review_thread_resolution = true
+    }
+
+    required_code_scanning {
+      required_code_scanning_tool {
+        alerts_threshold          = "errors"
+        security_alerts_threshold = "high_or_higher"
+        tool                      = "CodeQL"
+      }
+    }
+  }
+}
+
 locals {
-  protected_repos = {
-    "inverter_control"      = github_repository.inverter_control.node_id
-    "inverter_dashboard"    = github_repository.inverter_dashboard.node_id
-    "inverter_dashboard_go" = github_repository.inverter_dashboard_go.node_id
-    "dbus_mqtt_battery"     = github_repository.dbus_mqtt_battery.node_id
-    "dbus_tasmota_pv"       = github_repository.dbus_tasmota_pv.node_id
-    "esphome_jbd_bms_mqtt"  = github_repository.esphome_jbd_bms_mqtt.node_id
-    "inverter_monitoring"   = github_repository.inverter_monitoring.node_id
-    "integration_tests"     = github_repository.integration_tests.node_id
-    "github_org"            = github_repository.github_org.node_id
-  }
+  remaining_repos = [
+    "inverter-control",
+    "inverter-dashboard",
+    "inverter-dashboard-go",
+    "dbus-mqtt-battery",
+    "dbus-tasmota-pv",
+    "esphome-jbd-bms-mqtt",
+    "inverter-monitoring",
+    "integration-tests",
+    ".github",
+  ]
 }
 
-resource "github_branch_protection" "main" {
-  for_each      = local.protected_repos
-  repository_id = each.value
-  pattern       = "main"
+resource "github_repository_ruleset" "default_remaining" {
+  for_each    = toset(local.remaining_repos)
+  name        = "Default"
+  repository  = each.value
+  target      = "branch"
+  enforcement = "active"
 
-  enforce_admins                  = false
-  allows_deletions                = false
-  allows_force_pushes             = false
-  require_conversation_resolution = true
-  require_signed_commits          = true
-
-  required_pull_request_reviews {
-    dismiss_stale_reviews           = true
-    required_approving_review_count = 1
-  }
-}
-
-resource "github_branch_protection" "inverter_desktop" {
-  repository_id = github_repository.inverter_desktop.node_id
-  pattern       = "main"
-
-  enforce_admins                  = false
-  allows_deletions                = false
-  allows_force_pushes             = false
-  require_conversation_resolution = true
-  require_signed_commits          = true
-
-  required_status_checks {
-    strict   = true
-    contexts = ["cargo-audit", "frontend", "rust", "vitest"]
+  bypass_actors {
+    actor_id    = 5
+    actor_type  = "RepositoryRole"
+    bypass_mode = "always"
   }
 
-  required_pull_request_reviews {
-    dismiss_stale_reviews           = true
-    required_approving_review_count = 1
+  bypass_actors {
+    actor_id    = data.github_app.gitar.id
+    actor_type  = "Integration"
+    bypass_mode = "always"
+  }
+
+  conditions {
+    ref_name {
+      include = ["~DEFAULT_BRANCH"]
+      exclude = []
+    }
+  }
+
+  rules {
+    deletion            = true
+    non_fast_forward    = true
+    required_signatures = true
+
+    copilot_code_review {
+      review_draft_pull_requests = true
+      review_on_push             = true
+    }
+
+    pull_request {
+      allowed_merge_methods             = ["merge", "squash", "rebase"]
+      dismiss_stale_reviews_on_push     = false
+      require_code_owner_review         = true
+      require_last_push_approval        = true
+      required_approving_review_count   = 1
+      required_review_thread_resolution = true
+    }
+
+    required_code_scanning {
+      required_code_scanning_tool {
+        alerts_threshold          = "errors"
+        security_alerts_threshold = "high_or_higher"
+        tool                      = "CodeQL"
+      }
+    }
   }
 }
 
