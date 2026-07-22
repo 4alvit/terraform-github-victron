@@ -323,15 +323,44 @@ resource "github_repository_vulnerability_alerts" "integration_tests" {
   depends_on = [github_repository.integration_tests]
 }
 
-resource "github_repository" "github_org" {
-  name        = ".github"
-  description = "Organization profile and community resources"
+resource "github_repository" "terraform_github" {
+  name        = "terraform-github"
+  description = "Terraform infrastructure for the victron-venus GitHub organization"
   visibility  = "public"
 
-  has_issues      = false
-  has_projects    = false
+  has_issues      = true
+  has_projects    = true
   has_wiki        = false
   has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "github", "infrastructure-as-code", "terraform", "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "terraform_github" {
+  repository = github_repository.terraform_github.name
+  depends_on = [github_repository.terraform_github]
+}
+
+resource "github_repository" "github_org" {
+  name        = ".github"
+  description = "Organization profile, install guide, and community resources"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = false
+  has_wiki        = false
+  has_discussions = true
 
   allow_merge_commit = false
   allow_squash_merge = true
@@ -360,6 +389,24 @@ resource "github_repository_file" "github_org_gitignore" {
   branch     = "main"
   file       = ".gitignore"
   content    = file("${path.module}/files/github_org/.gitignore")
+
+  depends_on = [github_repository.github_org]
+}
+
+resource "github_repository_file" "github_org_contributing" {
+  repository = github_repository.github_org.name
+  branch     = "main"
+  file       = "CONTRIBUTING.md"
+  content    = file("${path.module}/files/github_org/CONTRIBUTING.md")
+
+  depends_on = [github_repository.github_org]
+}
+
+resource "github_repository_file" "github_org_install" {
+  repository = github_repository.github_org.name
+  branch     = "main"
+  file       = "docs/INSTALL.md"
+  content    = file("${path.module}/files/github_org/docs/INSTALL.md")
 
   depends_on = [github_repository.github_org]
 }
@@ -440,6 +487,7 @@ locals {
     "esphome-jbd-bms-mqtt",
     "inverter-monitoring",
     "integration-tests",
+    "terraform-github",
     ".github",
   ]
 }
@@ -547,6 +595,15 @@ resource "github_repository_dependabot_security_updates" "integration_tests" {
   repository = github_repository.integration_tests.id
   enabled    = true
 }
+
+resource "github_repository_dependabot_security_updates" "terraform_github" {
+  repository = github_repository.terraform_github.id
+  enabled    = true
+}
+
+# Organization-wide Discussions: enable manually at
+# https://github.com/organizations/victron-venus/settings/profile
+# (requires org admin). Per-repo discussions can be toggled via has_discussions above.
 
 # =============================================================================
 # Actions Secrets (optional - for Docker publishing)
