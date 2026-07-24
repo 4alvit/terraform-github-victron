@@ -168,6 +168,36 @@ resource "github_repository_vulnerability_alerts" "inverter_desktop" {
   depends_on = [github_repository.inverter_desktop]
 }
 
+resource "github_repository" "inverter_dashboard_vue" {
+  name        = "inverter-dashboard-vue"
+  description = "Shared Vue 3 frontend SPA and reusable UI component library for Victron dashboards"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "dashboard", "echarts", "mqtt", "tailwindcss", "typescript",
+    "venus-os", "victron", "vue", "vue3", "vite"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "inverter_dashboard_vue" {
+  repository = github_repository.inverter_dashboard_vue.name
+  depends_on = [github_repository.inverter_dashboard_vue]
+}
+
 resource "github_repository" "dbus_mqtt_battery" {
   name        = "dbus-mqtt-battery"
   description = "MQTT to D-Bus bridge for JBD BMS batteries on Victron Venus OS with DVCC support"
@@ -482,6 +512,7 @@ locals {
     "inverter-control",
     "inverter-dashboard",
     "inverter-dashboard-go",
+    "inverter-dashboard-vue",
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
     "esphome-jbd-bms-mqtt",
@@ -568,6 +599,11 @@ resource "github_repository_dependabot_security_updates" "inverter_dashboard_go"
 
 resource "github_repository_dependabot_security_updates" "inverter_desktop" {
   repository = github_repository.inverter_desktop.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "inverter_dashboard_vue" {
+  repository = github_repository.inverter_dashboard_vue.id
   enabled    = true
 }
 
