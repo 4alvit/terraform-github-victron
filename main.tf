@@ -411,7 +411,9 @@ resource "github_repository_file" "github_org_readme" {
   file       = "profile/README.md"
   content    = file("${path.module}/files/github_org/profile/README.md")
 
-  depends_on = [github_repository.github_org]
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "github_repository_file" "github_org_gitignore" {
@@ -420,7 +422,9 @@ resource "github_repository_file" "github_org_gitignore" {
   file       = ".gitignore"
   content    = file("${path.module}/files/github_org/.gitignore")
 
-  depends_on = [github_repository.github_org]
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "github_repository_file" "github_org_contributing" {
@@ -429,7 +433,9 @@ resource "github_repository_file" "github_org_contributing" {
   file       = "CONTRIBUTING.md"
   content    = file("${path.module}/files/github_org/CONTRIBUTING.md")
 
-  depends_on = [github_repository.github_org]
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "github_repository_file" "github_org_install" {
@@ -438,7 +444,9 @@ resource "github_repository_file" "github_org_install" {
   file       = "docs/INSTALL.md"
   content    = file("${path.module}/files/github_org/docs/INSTALL.md")
 
-  depends_on = [github_repository.github_org]
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # =============================================================================
