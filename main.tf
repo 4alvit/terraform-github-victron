@@ -26,18 +26,26 @@ provider "github" {
 }
 
 # =============================================================================
-# Organization Settings (managed manually via GitHub UI)
+# Organization Settings
 # =============================================================================
 # Note: Organization settings require specific admin permissions
 # and are better managed via GitHub UI for free tier accounts.
 # Uncomment below if you have admin:org scope on your PAT.
-#
-# resource "github_organization_settings" "victron_venus" {
-#   billing_email = var.billing_email
-#   name          = "Victron Venus"
-#   description   = "Open-source tools for Victron Energy systems and Venus OS"
-#   ...
-# }
+
+resource "github_organization_settings" "victron_venus" {
+  billing_email                 = var.billing_email
+  name                          = "Victron Venus"
+  description                   = "Open-source tools for Victron Energy systems and Venus OS"
+  blog                          = "https://github.com/victron-venus"
+  location                      = "Europe"
+  has_discussions               = true # Enable GitHub Discussions at org level
+  default_repository_visibility = "public"
+
+  # Require 2FA for all org members
+  two_factor_requirement {
+    enabled = true
+  }
+}
 
 # =============================================================================
 # Repositories
@@ -353,35 +361,6 @@ resource "github_repository_vulnerability_alerts" "integration_tests" {
   depends_on = [github_repository.integration_tests]
 }
 
-resource "github_repository" "terraform_github" {
-  name        = "terraform-github"
-  description = "Terraform infrastructure for the victron-venus GitHub organization"
-  visibility  = "public"
-
-  has_issues      = true
-  has_projects    = true
-  has_wiki        = false
-  has_discussions = false
-
-  allow_merge_commit = true
-  allow_squash_merge = true
-  allow_rebase_merge = true
-  allow_auto_merge   = true
-
-  delete_branch_on_merge = true
-
-  topics = [
-    "github", "infrastructure-as-code", "terraform", "venus-os", "victron"
-  ]
-
-  license_template = "mit"
-}
-
-resource "github_repository_vulnerability_alerts" "terraform_github" {
-  repository = github_repository.terraform_github.name
-  depends_on = [github_repository.terraform_github]
-}
-
 resource "github_repository" "github_org" {
   name        = ".github"
   description = "Organization profile, install guide, and community resources"
@@ -526,7 +505,6 @@ locals {
     "esphome-jbd-bms-mqtt",
     "inverter-monitoring",
     "integration-tests",
-    "terraform-github",
     ".github",
   ]
 }
@@ -637,11 +615,6 @@ resource "github_repository_dependabot_security_updates" "inverter_monitoring" {
 
 resource "github_repository_dependabot_security_updates" "integration_tests" {
   repository = github_repository.integration_tests.id
-  enabled    = true
-}
-
-resource "github_repository_dependabot_security_updates" "terraform_github" {
-  repository = github_repository.terraform_github.id
   enabled    = true
 }
 
