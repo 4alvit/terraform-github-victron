@@ -42,6 +42,10 @@ terraform import 'github_branch_protection.main["inverter_monitoring"]' inverter
 terraform import 'github_branch_protection.main["integration_tests"]' integration-tests:main || true
 terraform import 'github_branch_protection.main["github_org"]' .github:main || true
 
+# Files
+terraform import github_repository_file.github_org_install '.github:docs/INSTALL.md:main'
+terraform import github_repository_file.github_org_contributing '.github:CONTRIBUTING.md:main'
+
 echo ""
 echo "=== Import complete ==="
 echo "Run 'terraform plan' to see if any drift exists"
