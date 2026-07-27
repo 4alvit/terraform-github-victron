@@ -32,20 +32,13 @@ provider "github" {
 # and are better managed via GitHub UI for free tier accounts.
 # Uncomment below if you have admin:org scope on your PAT.
 
-resource "github_organization_settings" "victron_venus" {
-  billing_email                 = var.billing_email
-  name                          = "Victron Venus"
-  description                   = "Open-source tools for Victron Energy systems and Venus OS"
-  blog                          = "https://github.com/victron-venus"
-  location                      = "Europe"
-  has_discussions               = true # Enable GitHub Discussions at org level
-  default_repository_visibility = "public"
-
-  # Require 2FA for all org members
-  two_factor_requirement {
-    enabled = true
-  }
-}
+# resource "github_organization_settings" "victron_venus" {
+#   billing_email                 = var.billing_email
+#   name                          = "Victron Venus"
+#   description                   = "Open-source tools for Victron Energy systems and Venus OS"
+#   blog                          = "https://github.com/victron-venus"
+#   location                      = "Europe"
+# }
 
 # =============================================================================
 # Repositories
@@ -192,6 +185,7 @@ resource "github_repository" "inverter_dashboard_vue" {
   allow_auto_merge   = true
 
   delete_branch_on_merge = true
+
 
   topics = [
     "dashboard", "echarts", "mqtt", "tailwindcss", "typescript",
@@ -618,10 +612,13 @@ resource "github_repository_dependabot_security_updates" "integration_tests" {
   enabled    = true
 }
 
-# Organization-wide Discussions: enable manually at
-# https://github.com/organizations/victron-venus/settings/profile
-# (requires org admin). Per-repo discussions can be toggled via has_discussions above.
+# Secret Scanning & Push Protection - Enable via GitHub UI or API
+# Resources not available in github provider v6.13 - enable manually at:
+# https://github.com/organizations/victron-venus/settings/security
+# Or via REST API: PUT /repos/{owner}/{repo}/secret-scanning/alerts
 
+# =============================================================================
+# Actions Secrets (optional - for Docker publishing)
 # =============================================================================
 # Actions Secrets (optional - for Docker publishing)
 # =============================================================================
