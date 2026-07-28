@@ -94,6 +94,12 @@ terraform import github_branch_protection.dbus_mqtt_battery_main dbus-mqtt-batte
 terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:main
 ```
 
+## Completed Features
+
+- ✅ **Branch Rulesets & Permissions**: Rulesets verified and configured
+- ✅ **Secret Scanning & Push Protection**: Enabled `secret_scanning` and `secret_scanning_push_protection` across all 12 organization repositories in `main.tf`
+- ✅ **Terraform CI Validation**: GitHub Actions workflow for `terraform fmt -check` and `tflint` on pull requests
+
 ## File Structure
 
 ```
