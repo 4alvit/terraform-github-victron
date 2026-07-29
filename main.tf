@@ -294,6 +294,37 @@ resource "github_repository_vulnerability_alerts" "esphome_jbd_bms_mqtt" {
   depends_on = [github_repository.esphome_jbd_bms_mqtt]
 }
 
+resource "github_repository" "venus_os_observability" {
+  name        = "venus-os-observability"
+  description = "OpenTelemetry/Prometheus observability for Venus OS — D-Bus event tracing, inverter metrics, distributed tracing"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "cerbo-gx", "dbus", "distributed-tracing", "grafana", "mqtt",
+    "opentelemetry", "prometheus", "tempo", "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "venus_os_observability" {
+  repository = github_repository.venus_os_observability.name
+  depends_on = [github_repository.venus_os_observability]
+}
+
 resource "github_repository" "inverter_monitoring" {
   name        = "inverter-monitoring"
   description = "Telegraf + InfluxDB + Grafana monitoring stack for Victron inverter systems"
@@ -497,6 +528,7 @@ locals {
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
     "esphome-jbd-bms-mqtt",
+    "venus-os-observability",
     "inverter-monitoring",
     "integration-tests",
     ".github",
@@ -599,6 +631,11 @@ resource "github_repository_dependabot_security_updates" "dbus_tasmota_pv" {
 
 resource "github_repository_dependabot_security_updates" "esphome_jbd_bms_mqtt" {
   repository = github_repository.esphome_jbd_bms_mqtt.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "venus_os_observability" {
+  repository = github_repository.venus_os_observability.id
   enabled    = true
 }
 
