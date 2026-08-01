@@ -262,6 +262,37 @@ resource "github_repository_vulnerability_alerts" "dbus_tasmota_pv" {
   depends_on = [github_repository.dbus_tasmota_pv]
 }
 
+resource "github_repository" "dbus_event_log" {
+  name        = "dbus-event-log"
+  description = "Audit log of all D-Bus commands and inverter state transitions with chronology, filtering, and export"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "audit-log", "cerbo-gx", "dbus", "inverter", "mqtt",
+    "python", "sqlite", "timescaledb", "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_event_log" {
+  repository = github_repository.dbus_event_log.name
+  depends_on = [github_repository.dbus_event_log]
+}
+
 resource "github_repository" "esphome_jbd_bms_mqtt" {
   name        = "esphome-jbd-bms-mqtt"
   description = "ESPHome ESP32 Bluetooth proxy for JBD BMS batteries, publishing to MQTT for Victron Venus OS"
@@ -323,6 +354,37 @@ resource "github_repository" "venus_os_observability" {
 resource "github_repository_vulnerability_alerts" "venus_os_observability" {
   repository = github_repository.venus_os_observability.name
   depends_on = [github_repository.venus_os_observability]
+}
+
+resource "github_repository" "venus_os_governance" {
+  name        = "venus-os-governance"
+  description = "Policy engine with approval gates for Venus OS — SOC limits, charge/discharge rules, inverter control policies with audit logging via dbus-event-log"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "cerbo-gx", "dbus", "governance", "inverter-control", "policy-engine",
+    "python", "venus-os", "victron", "approval-gates", "soc-limits"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "venus_os_governance" {
+  repository = github_repository.venus_os_governance.name
+  depends_on = [github_repository.venus_os_governance]
 }
 
 resource "github_repository" "inverter_monitoring" {
@@ -454,10 +516,6 @@ resource "github_repository_file" "github_org_install" {
 }
 
 # =============================================================================
-# Repositories (External to Org)
-# =============================================================================
-
-# =============================================================================
 # Branch Protection Rulesets
 # =============================================================================
 
@@ -527,8 +585,10 @@ locals {
     "inverter-dashboard-vue",
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
+    "dbus-event-log",
     "esphome-jbd-bms-mqtt",
     "venus-os-observability",
+    "venus-os-governance",
     "inverter-monitoring",
     "integration-tests",
     ".github",
@@ -629,6 +689,11 @@ resource "github_repository_dependabot_security_updates" "dbus_tasmota_pv" {
   enabled    = true
 }
 
+resource "github_repository_dependabot_security_updates" "dbus_event_log" {
+  repository = github_repository.dbus_event_log.id
+  enabled    = true
+}
+
 resource "github_repository_dependabot_security_updates" "esphome_jbd_bms_mqtt" {
   repository = github_repository.esphome_jbd_bms_mqtt.id
   enabled    = true
@@ -636,6 +701,11 @@ resource "github_repository_dependabot_security_updates" "esphome_jbd_bms_mqtt" 
 
 resource "github_repository_dependabot_security_updates" "venus_os_observability" {
   repository = github_repository.venus_os_observability.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "venus_os_governance" {
+  repository = github_repository.venus_os_governance.id
   enabled    = true
 }
 
@@ -649,21 +719,236 @@ resource "github_repository_dependabot_security_updates" "integration_tests" {
   enabled    = true
 }
 
-# Secret Scanning & Push Protection - Enable via GitHub UI or API
-# Resources not available in github provider v6.13 - enable manually at:
-# https://github.com/organizations/victron-venus/settings/security
-# Or via REST API: PUT /repos/{owner}/{repo}/secret-scanning/alerts
+# =============================================================================
+# Import Blocks (replace import.sh)
+# =============================================================================
 
-# =============================================================================
-# Actions Secrets (optional - for Docker publishing)
-# =============================================================================
-# Actions Secrets (optional - for Docker publishing)
-# =============================================================================
-# Note: Organization secrets require admin permissions.
-# For repository-level secrets, use github_actions_secret instead.
-#
-# resource "github_actions_organization_secret" "ghcr_token" {
-#   secret_name     = "GHCR_TOKEN"
-#   visibility      = "all"
-#   plaintext_value = var.ghcr_token
-# }
+# Repositories
+import {
+  to = github_repository.inverter_control
+  id = "inverter-control"
+}
+import {
+  to = github_repository.inverter_dashboard
+  id = "inverter-dashboard"
+}
+import {
+  to = github_repository.inverter_dashboard_go
+  id = "inverter-dashboard-go"
+}
+import {
+  to = github_repository.inverter_desktop
+  id = "inverter-desktop"
+}
+import {
+  to = github_repository.inverter_dashboard_vue
+  id = "inverter-dashboard-vue"
+}
+import {
+  to = github_repository.dbus_mqtt_battery
+  id = "dbus-mqtt-battery"
+}
+import {
+  to = github_repository.dbus_tasmota_pv
+  id = "dbus-tasmota-pv"
+}
+import {
+  to = github_repository.dbus_event_log
+  id = "dbus-event-log"
+}
+import {
+  to = github_repository.esphome_jbd_bms_mqtt
+  id = "esphome-jbd-bms-mqtt"
+}
+import {
+  to = github_repository.venus_os_observability
+  id = "venus-os-observability"
+}
+import {
+  to = github_repository.venus_os_governance
+  id = "venus-os-governance"
+}
+import {
+  to = github_repository.inverter_monitoring
+  id = "inverter-monitoring"
+}
+import {
+  to = github_repository.integration_tests
+  id = "integration-tests"
+}
+import {
+  to = github_repository.github_org
+  id = ".github"
+}
+
+# Vulnerability alerts
+import {
+  to = github_repository_vulnerability_alerts.inverter_control
+  id = "victron-venus/inverter-control"
+}
+import {
+  to = github_repository_vulnerability_alerts.inverter_dashboard
+  id = "victron-venus/inverter-dashboard"
+}
+import {
+  to = github_repository_vulnerability_alerts.inverter_dashboard_go
+  id = "victron-venus/inverter-dashboard-go"
+}
+import {
+  to = github_repository_vulnerability_alerts.inverter_desktop
+  id = "victron-venus/inverter-desktop"
+}
+import {
+  to = github_repository_vulnerability_alerts.inverter_dashboard_vue
+  id = "victron-venus/inverter-dashboard-vue"
+}
+import {
+  to = github_repository_vulnerability_alerts.dbus_mqtt_battery
+  id = "victron-venus/dbus-mqtt-battery"
+}
+import {
+  to = github_repository_vulnerability_alerts.dbus_tasmota_pv
+  id = "victron-venus/dbus-tasmota-pv"
+}
+import {
+  to = github_repository_vulnerability_alerts.dbus_event_log
+  id = "victron-venus/dbus-event-log"
+}
+import {
+  to = github_repository_vulnerability_alerts.esphome_jbd_bms_mqtt
+  id = "victron-venus/esphome-jbd-bms-mqtt"
+}
+import {
+  to = github_repository_vulnerability_alerts.venus_os_observability
+  id = "victron-venus/venus-os-observability"
+}
+import {
+  to = github_repository_vulnerability_alerts.venus_os_governance
+  id = "victron-venus/venus-os-governance"
+}
+import {
+  to = github_repository_vulnerability_alerts.inverter_monitoring
+  id = "victron-venus/inverter-monitoring"
+}
+import {
+  to = github_repository_vulnerability_alerts.integration_tests
+  id = "victron-venus/integration-tests"
+}
+
+# Dependabot security updates
+import {
+  to = github_repository_dependabot_security_updates.inverter_control
+  id = "victron-venus/inverter-control"
+}
+import {
+  to = github_repository_dependabot_security_updates.inverter_dashboard
+  id = "victron-venus/inverter-dashboard"
+}
+import {
+  to = github_repository_dependabot_security_updates.inverter_dashboard_go
+  id = "victron-venus/inverter-dashboard-go"
+}
+import {
+  to = github_repository_dependabot_security_updates.inverter_desktop
+  id = "victron-venus/inverter-desktop"
+}
+import {
+  to = github_repository_dependabot_security_updates.inverter_dashboard_vue
+  id = "victron-venus/inverter-dashboard-vue"
+}
+import {
+  to = github_repository_dependabot_security_updates.dbus_mqtt_battery
+  id = "victron-venus/dbus-mqtt-battery"
+}
+import {
+  to = github_repository_dependabot_security_updates.dbus_tasmota_pv
+  id = "victron-venus/dbus-tasmota-pv"
+}
+import {
+  to = github_repository_dependabot_security_updates.dbus_event_log
+  id = "victron-venus/dbus-event-log"
+}
+import {
+  to = github_repository_dependabot_security_updates.esphome_jbd_bms_mqtt
+  id = "victron-venus/esphome-jbd-bms-mqtt"
+}
+import {
+  to = github_repository_dependabot_security_updates.venus_os_observability
+  id = "victron-venus/venus-os-observability"
+}
+import {
+  to = github_repository_dependabot_security_updates.venus_os_governance
+  id = "victron-venus/venus-os-governance"
+}
+import {
+  to = github_repository_dependabot_security_updates.inverter_monitoring
+  id = "victron-venus/inverter-monitoring"
+}
+import {
+  to = github_repository_dependabot_security_updates.integration_tests
+  id = "victron-venus/integration-tests"
+}
+
+# Branch protection rulesets
+import {
+  to = github_repository_ruleset.default
+  id = "inverter-desktop:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["inverter-control"]
+  id = "inverter-control:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["inverter-dashboard"]
+  id = "inverter-dashboard:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["inverter-dashboard-go"]
+  id = "inverter-dashboard-go:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["inverter-dashboard-vue"]
+  id = "inverter-dashboard-vue:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["dbus-mqtt-battery"]
+  id = "dbus-mqtt-battery:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["dbus-tasmota-pv"]
+  id = "dbus-tasmota-pv:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["dbus-event-log"]
+  id = "dbus-event-log:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["esphome-jbd-bms-mqtt"]
+  id = "esphome-jbd-bms-mqtt:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["venus-os-observability"]
+  id = "venus-os-observability:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["venus-os-governance"]
+  id = "venus-os-governance:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining["integration-tests"]
+  id = "integration-tests:Default"
+}
+import {
+  to = github_repository_ruleset.default_remaining[".github"]
+  id = ".github:Default"
+}
+
+# Repository files
+import {
+  to = github_repository_file.github_org_install
+  id = ".github:docs/INSTALL.md:main"
+}
+import {
+  to = github_repository_file.github_org_contributing
+  id = ".github:CONTRIBUTING.md:main"
+}
