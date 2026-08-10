@@ -52,7 +52,7 @@ resource "github_repository" "inverter_control" {
   has_issues      = true
   has_projects    = true
   has_wiki        = true
-  has_discussions = false
+  has_discussions = true
 
   allow_merge_commit = true
   allow_squash_merge = true
@@ -115,7 +115,7 @@ resource "github_repository" "inverter_dashboard_go" {
   has_issues      = true
   has_projects    = true
   has_wiki        = true
-  has_discussions = false
+  has_discussions = true
 
   allow_merge_commit = true
   allow_squash_merge = true
@@ -421,6 +421,12 @@ resource "github_repository_dependabot_security_updates" "dbus_event_log" {
   enabled    = true
 }
 
+resource "github_actions_organization_workflow_permissions" "victron_venus" {
+  organization_slug                = "victron-venus"
+  default_workflow_permissions     = "write"
+  can_approve_pull_request_reviews = true
+}
+
 resource "github_repository" "venus_os_governance" {
   name        = "venus-os-governance"
   description = "Policy engine with approval gates for Venus OS — SOC limits, charge/discharge rules, inverter control policies with audit logging via dbus-event-log"
@@ -453,6 +459,114 @@ resource "github_repository_vulnerability_alerts" "venus_os_governance" {
 
 resource "github_repository_dependabot_security_updates" "venus_os_governance" {
   repository = github_repository.venus_os_governance.id
+  enabled    = true
+}
+
+resource "github_repository" "dbus_esphome_grid_sensor" {
+  name        = "dbus-esphome-grid-sensor"
+  description = "ESP32 CT sensor for grid power monitoring with D-Bus service for Venus OS"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "esp32", "esphome", "ct-sensor", "grid-meter", "mqtt",
+    "dbus", "venus-os", "victron", "docker", "python", "home-automation"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_esphome_grid_sensor" {
+  repository = github_repository.dbus_esphome_grid_sensor.name
+  depends_on = [github_repository.dbus_esphome_grid_sensor]
+}
+
+resource "github_repository_dependabot_security_updates" "dbus_esphome_grid_sensor" {
+  repository = github_repository.dbus_esphome_grid_sensor.id
+  enabled    = true
+}
+
+resource "github_repository" "venus_os_integration_patterns" {
+  name        = "venus-os-integration-patterns"
+  description = "Reference implementations for common Venus OS integrations — MQTT↔D-Bus bridges, HTTP API wrappers, scheduled control, Home Assistant automations"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "cerbo-gx", "dbus", "fastapi", "ha-automation", "home-assistant",
+    "integration-patterns", "mqtt", "python", "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "venus_os_integration_patterns" {
+  repository = github_repository.venus_os_integration_patterns.name
+  depends_on = [github_repository.venus_os_integration_patterns]
+}
+
+resource "github_repository_dependabot_security_updates" "venus_os_integration_patterns" {
+  repository = github_repository.venus_os_integration_patterns.id
+  enabled    = true
+}
+
+resource "github_repository" "venus_os_ci_toolkit" {
+  name        = "venus-os-ci-toolkit"
+  description = "Reusable GitHub Actions workflows and CI tooling for Victron Venus OS projects"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+
+  topics = [
+    "ci", "github-actions", "github-workflows", "venus-os", "victron",
+    "docker", "python", "go", "testing", "reusable-workflows"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "venus_os_ci_toolkit" {
+  repository = github_repository.venus_os_ci_toolkit.name
+  depends_on = [github_repository.venus_os_ci_toolkit]
+}
+
+resource "github_repository_dependabot_security_updates" "venus_os_ci_toolkit" {
+  repository = github_repository.venus_os_ci_toolkit.id
   enabled    = true
 }
 
@@ -601,8 +715,11 @@ locals {
     "esphome-jbd-bms-mqtt",
     "venus-os-observability",
     "venus-os-governance",
+    "venus-os-integration-patterns",
+    "venus-os-ci-toolkit",
     "inverter-monitoring",
     "integration-tests",
+    "dbus-esphome-grid-sensor",
     ".github",
   ]
 }
