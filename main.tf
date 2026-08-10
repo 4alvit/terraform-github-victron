@@ -570,6 +570,35 @@ resource "github_repository_dependabot_security_updates" "venus_os_ci_toolkit" {
   enabled    = true
 }
 
+resource "github_repository" "setup_helper" {
+  name        = "SetupHelper"
+  description = "Helper scripts for Victron Venus OS setup and configuration"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "venus-os", "victron", "setup", "helper", "scripts"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "setup_helper" {
+  repository = github_repository.setup_helper.name
+  depends_on = [github_repository.setup_helper]
+}
+
 resource "github_repository" "github_org" {
   name        = ".github"
   description = "Organization profile, install guide, and community resources"
@@ -635,6 +664,20 @@ resource "github_repository_file" "github_org_install" {
   lifecycle {
     ignore_changes = all
   }
+}
+
+# =============================================================================
+# Import Blocks (for existing repos)
+# =============================================================================
+
+import {
+  to = github_repository.setup_helper
+  id = "SetupHelper"
+}
+
+import {
+  to = github_repository_vulnerability_alerts.setup_helper
+  id = "SetupHelper"
 }
 
 # =============================================================================
@@ -721,6 +764,7 @@ locals {
     "integration-tests",
     "dbus-esphome-grid-sensor",
     ".github",
+    "SetupHelper",
   ]
 }
 
