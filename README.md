@@ -40,7 +40,7 @@ This Terraform configuration manages the entire GitHub infrastructure for the vi
 State is stored securely in Terraform Cloud (free tier: 500 resources).
 
 ```bash
-cd terraform-github
+cd terraform-github-victron
 
 # Interactive setup
 ./setup-cloud.sh
@@ -63,7 +63,7 @@ Or manually:
 Comment out the `cloud {}` block in `main.tf`, then:
 
 ```bash
-cd terraform-github
+cd terraform-github-victron
 cp terraform.tfvars.example terraform.tfvars
 # Edit terraform.tfvars with your values
 
@@ -103,7 +103,7 @@ terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:m
 ## File Structure
 
 ```
-terraform-github/
+terraform-github-victron/
 ├── main.tf              # Main configuration
 ├── variables.tf         # Variable definitions
 ├── outputs.tf           # Output values
