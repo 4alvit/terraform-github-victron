@@ -882,10 +882,10 @@ resource "github_repository_dependabot_security_updates" "integration_tests" {
   enabled    = true
 }
 
-# Secret Scanning & Push Protection - Enable via GitHub UI or API
-# Resources not available in github provider v6.13 - enable manually at:
-# https://github.com/organizations/victron-venus/settings/security
-# Or via REST API: PUT /repos/{owner}/{repo}/secret-scanning/alerts
+resource "github_repository_dependabot_security_updates" "setup_helper" {
+  repository = github_repository.setup_helper.id
+  enabled    = true
+}
 
 # =============================================================================
 # Actions Secrets (optional - for Docker publishing)
