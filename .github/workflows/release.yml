@@ -109,7 +109,7 @@ jobs:
       # `release.sh` + `gh release create --notes-file release.txt` keeps your notes;
       # this job only uploads binaries and checksums to the same tag.
       - name: Release assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
           files: |
