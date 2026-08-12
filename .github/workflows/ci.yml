@@ -6,22 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.5.x
-          terraform_wrapper: false
-      - name: Install tflint
-        run: |
-          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-      - name: Terraform fmt
-        run: terraform fmt -check -recursive
-      - name: Terraform Validate
-        run: terraform validate
-      - name: TFLint
-        run: tflint --init --enable-plugin=terraform
+    name: Terraform CI
+    uses: victron-venus/venus-os-ci-toolkit/.github/workflows/terraform-ci.yml@875762362bb31b4899bf02fdf9e835188dc5eb80
+    with:
+      working-directory: '.'
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
