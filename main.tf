@@ -262,6 +262,42 @@ resource "github_repository_vulnerability_alerts" "dbus_tasmota_pv" {
   depends_on = [github_repository.dbus_tasmota_pv]
 }
 
+resource "github_repository" "dbus_emporia_vue" {
+  name        = "dbus-emporia-vue"
+  description = "Emporia Vue submeter channels as individual Victron D-Bus AC loads for Venus OS — Home Assistant WebSocket power data via com.victronenergy.acload services"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "acload", "cerbo-gx", "dbus", "emporia-vue", "energy-management",
+    "hass", "home-assistant", "python", "submetering", "venus-os", "victron",
+    "websocket"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_emporia_vue" {
+  repository = github_repository.dbus_emporia_vue.name
+  depends_on = [github_repository.dbus_emporia_vue]
+}
+
+resource "github_repository_dependabot_security_updates" "dbus_emporia_vue" {
+  repository = github_repository.dbus_emporia_vue.id
+  enabled    = true
+}
+
 resource "github_repository" "esphome_jbd_bms_mqtt" {
   name        = "esphome-jbd-bms-mqtt"
   description = "ESPHome ESP32 Bluetooth proxy for JBD BMS batteries, publishing to MQTT for Victron Venus OS"
@@ -755,6 +791,7 @@ locals {
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
     "dbus-event-log",
+    "dbus-emporia-vue",
     "esphome-jbd-bms-mqtt",
     "venus-os-observability",
     "venus-os-governance",
