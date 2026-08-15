@@ -27,3 +27,4 @@ terraform.rc
 commit.txt
 logs
 tfplan
+main.tf.bak
