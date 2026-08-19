@@ -831,6 +831,9 @@ locals {
     ".github",
        "virtual-battery",
     "SetupHelper",
+    "venus-os-backup-restore",
+    "homeassistant-victron-advanced",
+    "victron-docs",
   ]
 }
 
