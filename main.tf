@@ -704,6 +704,34 @@ resource "github_repository_file" "github_org_install" {
 
 # =============================================================================
 # Import Blocks (for existing repos)
+resource "github_repository" "virtual_battery" {
+  name        = "virtual-battery"
+  description = "Virtual battery simulator for testing and development of Victron Venus OS battery integrations"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "battery", "simulator", "test", "venus-os", "victron", "dbus", "mqtt"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "virtual_battery" {
+  repository = github_repository.virtual_battery.name
+  depends_on = [github_repository.virtual_battery]
+}
 # =============================================================================
 
 import {
@@ -801,10 +829,8 @@ locals {
     "integration-tests",
     "dbus-esphome-grid-sensor",
     ".github",
+       "virtual-battery",
     "SetupHelper",
-    "venus-os-backup-restore",
-    "homeassistant-victron-advanced",
-    "victron-docs",
   ]
 }
 
@@ -927,107 +953,6 @@ resource "github_repository_dependabot_security_updates" "setup_helper" {
   enabled    = true
 }
 
-resource "github_repository" "venus_os_backup_restore" {
-  name        = "venus-os-backup-restore"
-  description = "Automatic backup/restore of Venus OS configuration"
-  visibility  = "public"
-
-  has_issues      = true
-  has_projects    = true
-  has_wiki        = true
-  has_discussions = false
-
-  allow_merge_commit = true
-  allow_squash_merge = true
-  allow_rebase_merge = true
-  allow_auto_merge   = true
-
-  delete_branch_on_merge = true
-
-  topics = [
-    "venus-os", "backup", "restore", "configuration", "python", "victron"
-  ]
-
-  license_template = "mit"
-}
-
-resource "github_repository_vulnerability_alerts" "venus_os_backup_restore" {
-  repository = github_repository.venus_os_backup_restore.name
-  depends_on = [github_repository.venus_os_backup_restore]
-}
-
-resource "github_repository_dependabot_security_updates" "venus_os_backup_restore" {
-  repository = github_repository.venus_os_backup_restore.id
-  enabled    = true
-}
-
-resource "github_repository" "homeassistant_victron_advanced" {
-  name        = "homeassistant-victron-advanced"
-  description = "Home Assistant custom component using D-Bus services directly (not standard Modbus)"
-  visibility  = "public"
-
-  has_issues      = true
-  has_projects    = true
-  has_wiki        = true
-  has_discussions = false
-
-  allow_merge_commit = true
-  allow_squash_merge = true
-  allow_rebase_merge = true
-  allow_auto_merge   = true
-
-  delete_branch_on_merge = true
-
-  topics = [
-    "home-assistant", "custom-component", "dbus", "venus-os", "victron", "python"
-  ]
-
-  license_template = "mit"
-}
-
-resource "github_repository_vulnerability_alerts" "homeassistant_victron_advanced" {
-  repository = github_repository.homeassistant_victron_advanced.name
-  depends_on = [github_repository.homeassistant_victron_advanced]
-}
-
-resource "github_repository_dependabot_security_updates" "homeassistant_victron_advanced" {
-  repository = github_repository.homeassistant_victron_advanced.id
-  enabled    = true
-}
-
-resource "github_repository" "victron_docs" {
-  name        = "victron-docs"
-  description = "Documentation and blog for the Victron Venus OS ecosystem hosted on GitHub Pages"
-  visibility  = "public"
-
-  has_issues      = true
-  has_projects    = true
-  has_wiki        = true
-  has_discussions = false
-
-  allow_merge_commit = true
-  allow_squash_merge = true
-  allow_rebase_merge = true
-  allow_auto_merge   = true
-
-  delete_branch_on_merge = true
-
-  topics = [
-    "documentation", "blog", "github-pages", "venus-os", "victron", "markdown"
-  ]
-
-  license_template = "mit"
-}
-
-resource "github_repository_vulnerability_alerts" "victron_docs" {
-  repository = github_repository.victron_docs.name
-  depends_on = [github_repository.victron_docs]
-}
-
-resource "github_repository_dependabot_security_updates" "victron_docs" {
-  repository = github_repository.victron_docs.id
-  enabled    = true
-}
 # =============================================================================
 # Actions Secrets (optional - for Docker publishing)
 # =============================================================================
