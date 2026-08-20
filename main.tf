@@ -1,5 +1,4 @@
 terraform {
-
   required_version = ">= 1.15.7"
 
   # Remote state storage in Terraform Cloud (free tier)
@@ -279,6 +278,7 @@ resource "github_repository" "dbus_emporia_vue" {
 
   delete_branch_on_merge = true
 
+
   topics = [
     "acload", "cerbo-gx", "dbus", "emporia-vue", "energy-management",
     "hass", "home-assistant", "python", "submetering", "venus-os", "victron",
@@ -314,7 +314,6 @@ resource "github_repository" "esphome_jbd_bms_mqtt" {
   allow_auto_merge   = true
 
   delete_branch_on_merge = true
-
 
 
   topics = [
@@ -439,6 +438,7 @@ resource "github_repository" "dbus_event_log" {
 
   delete_branch_on_merge = true
 
+
   topics = [
     "audit-log", "cerbo-gx", "dbus", "inverter", "mqtt",
     "python", "sqlite", "timescaledb", "venus-os", "victron"
@@ -479,6 +479,7 @@ resource "github_repository" "venus_os_governance" {
   allow_auto_merge   = true
 
   delete_branch_on_merge = true
+
 
   topics = [
     "approval-gates", "cerbo-gx", "dbus", "governance", "inverter-control",
@@ -623,6 +624,7 @@ resource "github_repository" "setup_helper" {
 
   delete_branch_on_merge = true
 
+
   topics = [
     "venus-os", "victron", "setup", "helper", "scripts"
   ]
@@ -704,9 +706,25 @@ resource "github_repository_file" "github_org_install" {
 
 # =============================================================================
 # Import Blocks (for existing repos)
-resource "github_repository" "virtual_battery" {
-  name        = "virtual-battery"
-  description = "Virtual battery simulator for testing and development of Victron Venus OS battery integrations"
+# =============================================================================
+moved {
+  from = github_repository.virtual_battery
+  to   = github_repository.dbus_virtual_battery
+}
+
+moved {
+  from = github_repository_vulnerability_alerts.virtual_battery
+  to   = github_repository_vulnerability_alerts.dbus_virtual_battery
+}
+
+moved {
+  from = github_repository_ruleset.default_remaining["virtual-battery"]
+  to   = github_repository_ruleset.default_remaining["dbus-virtual-battery"]
+}
+
+resource "github_repository" "dbus_virtual_battery" {
+  name        = "dbus-virtual-battery"
+  description = "DBus Virtual Battery Calculator for chains without BMS (used by dbus-mqtt-battery)"
   visibility  = "public"
 
   has_issues      = true
@@ -728,25 +746,40 @@ resource "github_repository" "virtual_battery" {
   license_template = "mit"
 }
 
-resource "github_repository_vulnerability_alerts" "virtual_battery" {
-  repository = github_repository.virtual_battery.name
-  depends_on = [github_repository.virtual_battery]
-}
-# =============================================================================
-
-import {
-  to = github_repository.setup_helper
-  id = "SetupHelper"
-}
-
-import {
-  to = github_repository_vulnerability_alerts.setup_helper
-  id = "SetupHelper"
+resource "github_repository_vulnerability_alerts" "dbus_virtual_battery" {
+  repository = github_repository.dbus_virtual_battery.name
+  depends_on = [github_repository.dbus_virtual_battery]
 }
 
 # =============================================================================
-# Repositories (External to Org)
+# Remaining Repositories
 # =============================================================================
+
+locals {
+  remaining_repos = [
+    "inverter-control",
+    "inverter-dashboard",
+    "inverter-dashboard-go",
+    "inverter-dashboard-vue",
+    "dbus-mqtt-battery",
+    "dbus-tasmota-pv",
+    "dbus-event-log",
+    "dbus-emporia-vue",
+    "esphome-jbd-bms-mqtt",
+    "venus-os-observability",
+    "venus-os-governance",
+    "venus-os-integration-patterns",
+    "venus-os-ci-toolkit",
+    "inverter-monitoring",
+    "integration-tests",
+    "dbus-esphome-grid-sensor",
+    ".github",
+    "dbus-virtual-battery",
+    "SetupHelper",
+#    "venus-os-backup-restore",
+#    "homeassistant-victron-advanced",
+  ]
+}
 
 # =============================================================================
 # Branch Protection Rulesets
@@ -808,33 +841,6 @@ resource "github_repository_ruleset" "default" {
       }
     }
   }
-}
-
-locals {
-  remaining_repos = [
-    "inverter-control",
-    "inverter-dashboard",
-    "inverter-dashboard-go",
-    "inverter-dashboard-vue",
-    "dbus-mqtt-battery",
-    "dbus-tasmota-pv",
-    "dbus-event-log",
-    "dbus-emporia-vue",
-    "esphome-jbd-bms-mqtt",
-    "venus-os-observability",
-    "venus-os-governance",
-    "venus-os-integration-patterns",
-    "venus-os-ci-toolkit",
-    "inverter-monitoring",
-    "integration-tests",
-    "dbus-esphome-grid-sensor",
-    ".github",
-       "virtual-battery",
-    "SetupHelper",
-    "venus-os-backup-restore",
-    "homeassistant-victron-advanced",
-    "victron-docs",
-  ]
 }
 
 resource "github_repository_ruleset" "default_remaining" {
@@ -955,17 +961,3 @@ resource "github_repository_dependabot_security_updates" "setup_helper" {
   repository = github_repository.setup_helper.id
   enabled    = true
 }
-
-# =============================================================================
-# Actions Secrets (optional - for Docker publishing)
-# =============================================================================
-# Actions Secrets (optional - for Docker publishing)
-# =============================================================================
-# Note: Organization secrets require admin permissions.
-# For repository-level secrets, use github_actions_secret instead.
-#
-# resource "github_actions_organization_secret" "ghcr_token" {
-#   secret_name     = "GHCR_TOKEN"
-#   visibility      = "all"
-#   plaintext_value = var.ghcr_token
-# }
