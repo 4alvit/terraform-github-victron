@@ -776,8 +776,8 @@ locals {
     ".github",
     "dbus-virtual-battery",
     "SetupHelper",
-#    "venus-os-backup-restore",
-#    "homeassistant-victron-advanced",
+    #    "venus-os-backup-restore",
+    #    "homeassistant-victron-advanced",
   ]
 }
 
