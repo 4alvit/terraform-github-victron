@@ -751,6 +751,36 @@ resource "github_repository_vulnerability_alerts" "dbus_virtual_battery" {
   depends_on = [github_repository.dbus_virtual_battery]
 }
 
+resource "github_repository" "dbus_pump" {
+  name        = "dbus-pump"
+  description = "Home-Assistant-backed water tank/pump/valve bridge for Victron Venus OS (Cerbo GX)"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "cerbo-gx", "dbus", "home-assistant", "mqtt", "python",
+    "venus-os", "victron", "water-management"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_pump" {
+  repository = github_repository.dbus_pump.name
+  depends_on = [github_repository.dbus_pump]
+}
+
 # =============================================================================
 # Remaining Repositories
 # =============================================================================
@@ -776,6 +806,7 @@ locals {
     ".github",
     "dbus-virtual-battery",
     "SetupHelper",
+    "dbus-pump",
     #    "venus-os-backup-restore",
     #    "homeassistant-victron-advanced",
   ]
@@ -959,5 +990,10 @@ resource "github_repository_dependabot_security_updates" "integration_tests" {
 
 resource "github_repository_dependabot_security_updates" "setup_helper" {
   repository = github_repository.setup_helper.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "dbus_pump" {
+  repository = github_repository.dbus_pump.id
   enabled    = true
 }
