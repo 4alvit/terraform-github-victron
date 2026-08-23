@@ -2,8 +2,6 @@
 
 [![CI](https://github.com/4alvit/terraform-github-victron/actions/workflows/ci.yml/badge.svg)](https://github.com/4alvit/terraform-github-victron/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub stars](https://img.shields.io/github/stars/4alvit/terraform-github-victron)](https://github.com/4alvit/terraform-github-victron/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/4alvit/terraform-github-victron)](https://github.com/4alvit/terraform-github-victron/network/members)
 [![GitHub last commit](https://img.shields.io/github/last-commit/4alvit/terraform-github-victron)](https://github.com/4alvit/terraform-github-victron/commits/main)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/4alvit/terraform-github-victron/graphs/commit-activity)
 [![Terraform](https://img.shields.io/badge/Terraform-1.0+-blue.svg)](https://www.terraform.io/)
