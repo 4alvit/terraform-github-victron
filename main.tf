@@ -463,6 +463,7 @@ resource "github_actions_organization_workflow_permissions" "victron_venus" {
   can_approve_pull_request_reviews = true
 }
 
+/* # Archived
 resource "github_repository" "venus_os_governance" {
   name        = "venus-os-governance"
   description = "Policy engine with approval gates for Venus OS — SOC limits, charge/discharge rules, inverter control policies with audit logging via dbus-event-log"
@@ -498,6 +499,32 @@ resource "github_repository_dependabot_security_updates" "venus_os_governance" {
   repository = github_repository.venus_os_governance.id
   enabled    = true
 }
+*/
+
+removed {
+  from = github_repository.venus_os_governance
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = github_repository_vulnerability_alerts.venus_os_governance
+
+  lifecycle {
+    destroy = false
+  }
+}
+
+removed {
+  from = github_repository_dependabot_security_updates.venus_os_governance
+
+  lifecycle {
+    destroy = false
+  }
+}
+
 
 resource "github_repository" "dbus_esphome_grid_sensor" {
   name        = "dbus-esphome-grid-sensor"
@@ -776,9 +803,69 @@ resource "github_repository" "dbus_pump" {
   license_template = "mit"
 }
 
+resource "github_repository" "dbus_evcharger" {
+  name        = "dbus-evcharger"
+  description = "Venus OS D-Bus EV charger (wallbox) service publishing com.victronenergy.evcharger for VRM/GUIv2"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "cerbo-gx", "dbus", "ev", "evcharger", "python",
+    "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
+resource "github_repository" "dbus_ev" {
+  name        = "dbus-ev"
+  description = "Venus OS D-Bus EV vehicle service publishing com.victronenergy.ev (SoC, range) for VRM/GUIv2"
+  visibility  = "public"
+
+  has_issues      = true
+  has_projects    = true
+  has_wiki        = true
+  has_discussions = false
+
+  allow_merge_commit = true
+  allow_squash_merge = true
+  allow_rebase_merge = true
+  allow_auto_merge   = true
+
+  delete_branch_on_merge = true
+
+  topics = [
+    "cerbo-gx", "dbus", "ev", "python",
+    "venus-os", "victron"
+  ]
+
+  license_template = "mit"
+}
+
 resource "github_repository_vulnerability_alerts" "dbus_pump" {
   repository = github_repository.dbus_pump.name
   depends_on = [github_repository.dbus_pump]
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_evcharger" {
+  repository = github_repository.dbus_evcharger.name
+  depends_on = [github_repository.dbus_evcharger]
+}
+
+resource "github_repository_vulnerability_alerts" "dbus_ev" {
+  repository = github_repository.dbus_ev.name
+  depends_on = [github_repository.dbus_ev]
 }
 
 # =============================================================================
@@ -797,7 +884,7 @@ locals {
     "dbus-emporia-vue",
     "esphome-jbd-bms-mqtt",
     "venus-os-observability",
-    "venus-os-governance",
+    #    "venus-os-governance",  # archived
     "venus-os-integration-patterns",
     "venus-os-ci-toolkit",
     "inverter-monitoring",
@@ -807,6 +894,8 @@ locals {
     "dbus-virtual-battery",
     "SetupHelper",
     "dbus-pump",
+    "dbus-evcharger",
+    "dbus-ev",
     #    "venus-os-backup-restore",
     #    "homeassistant-victron-advanced",
   ]
@@ -995,5 +1084,15 @@ resource "github_repository_dependabot_security_updates" "setup_helper" {
 
 resource "github_repository_dependabot_security_updates" "dbus_pump" {
   repository = github_repository.dbus_pump.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "dbus_evcharger" {
+  repository = github_repository.dbus_evcharger.id
+  enabled    = true
+}
+
+resource "github_repository_dependabot_security_updates" "dbus_ev" {
+  repository = github_repository.dbus_ev.id
   enabled    = true
 }
