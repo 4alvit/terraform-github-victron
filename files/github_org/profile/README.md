@@ -9,31 +9,35 @@ Created by [@4alvit](https://github.com/4alvit).
 ```mermaid
 flowchart TB
     subgraph Hardware["Hardware layer"]
+        direction TB
         BMS["JBD BMS / LiFePO4"]
-        ESP["ESP32 + ESPHome"]
-        TAS["Tasmota energy meter"]
-        CERBO["Cerbo GX / Venus OS"]
+        ~~~ ESP["ESP32 + ESPHome"]
+        ~~~ TAS["Tasmota energy meter"]
+        ~~~ CERBO["Cerbo GX / Venus OS"]
     end
 
     subgraph Control["Control layer (Venus OS packages)"]
+        direction TB
         ESP -->|"BLE → MQTT"| BM["dbus-mqtt-battery"]
-        TAS -->|"HTTP"| PV["dbus-tasmota-pv"]
-        BM -->|"D-Bus"| CERBO
-        PV -->|"D-Bus"| CERBO
-        IC["inverter-control"] -->|"D-Bus"| CERBO
+        ~~~ TAS -->|"HTTP"| PV["dbus-tasmota-pv"]
+        ~~~ BM -->|"D-Bus"| CERBO
+        ~~~ PV -->|"D-Bus"| CERBO
+        ~~~ IC["inverter-control"] -->|"D-Bus"| CERBO
     end
 
     subgraph UI["Monitoring & dashboards"]
+        direction TB
         IC -->|"MQTT inverter/state"| MQTT["MQTT broker"]
-        MQTT --> DGO["inverter-dashboard-go\n(primary Cerbo binary)"]
-        MQTT --> DPY["inverter-dashboard\n(Docker / alvit/inverter-dashboard)"]
-        MQTT --> DT["inverter-desktop\n(Tauri client)"]
-        MQTT --> MON["inverter-monitoring\n(TIG stack)"]
+        ~~~ MQTT --> DGO["inverter-dashboard-go\n(primary Cerbo binary)"]
+        ~~~ MQTT --> DPY["inverter-dashboard\n(Docker / alvit/inverter-dashboard)"]
+        ~~~ MQTT --> DT["inverter-desktop\n(Tauri client)"]
+        ~~~ MQTT --> MON["inverter-monitoring\n(TIG stack)"]
     end
 
     subgraph Dev["Development & ops"]
+        direction TB
         IT["integration-tests"]
-        TF["terraform-github"]
+        ~~~ TF["terraform-github"]
     end
 
     style IC fill:#4ecdc4,color:#000
