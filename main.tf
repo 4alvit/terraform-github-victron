@@ -54,6 +54,13 @@ locals {
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
+    inverter_gateway = {
+      name                        = "inverter-gateway"
+      description                 = "Remote HTTPS/SSE gateway for Victron Cerbo MQTT — Cloudflare Tunnel edge on Synology; used by inverter-desktop remote profile"
+      topics                      = ["cerbo-gx", "cloudflare", "docker", "energy-management", "gateway", "mqtt", "rust", "synology", "victron", "venus-os"]
+      vulnerability_alerts        = true
+      dependabot_security_updates = true
+    }
     inverter_dashboard_vue = {
       name                        = "inverter-dashboard-vue"
       description                 = "Shared Vue 3 frontend SPA and reusable UI component library for Victron dashboards"
@@ -330,6 +337,7 @@ locals {
     "inverter-dashboard",
     "inverter-dashboard-go",
     "inverter-dashboard-vue",
+    "inverter-gateway",
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
     "dbus-event-log",
