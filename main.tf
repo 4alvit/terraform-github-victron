@@ -4,7 +4,7 @@ terraform {
   # Remote state storage in Terraform Cloud (free tier)
   # Comment out this block for local state during initial setup
   cloud {
-    organization = "victron-venus"
+    organization = "alvit"
 
     workspaces {
       name = "github-infrastructure"
