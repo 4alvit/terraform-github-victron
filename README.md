@@ -47,7 +47,7 @@ cd terraform-github-victron
 Or manually:
 
 1. Create account: https://app.terraform.io/signup/account
-2. Create organization: `alvit`
+2. Create organization: `victron-venus`
 3. Login: `terraform login`
 4. Initialize: `terraform init` (creates workspace automatically)
 5. Add variables in Terraform Cloud UI:

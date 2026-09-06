@@ -20,7 +20,7 @@ The code is structurally correct:
 ## Phase 2: Migrate state (run before `terraform apply`)
 
 Run each `terraform state mv` command below **once**, targeting the
-Terraform Cloud workspace `alvit/github-infrastructure`.
+Terraform Cloud workspace `victron-venus/github-infrastructure`.
 These must be run after the PR is merged and before the first apply.
 
 You need `github_token` set (from `TF_VAR_github_token` or environment)
