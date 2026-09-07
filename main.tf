@@ -61,6 +61,13 @@ locals {
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
+    terraform_cloudflare_inverter_gateway = {
+      name                        = "terraform-cloudflare-inverter-gateway"
+      description                 = "Terraform for Cloudflare Zero Trust Access in front of inverter-gateway"
+      topics                      = ["cloudflare", "inverter-gateway", "terraform", "victron", "zero-trust"]
+      vulnerability_alerts        = true
+      dependabot_security_updates = true
+    }
     inverter_dashboard_vue = {
       name                        = "inverter-dashboard-vue"
       description                 = "Shared Vue 3 frontend SPA and reusable UI component library for Victron dashboards"
@@ -338,6 +345,7 @@ locals {
     "inverter-dashboard-go",
     "inverter-dashboard-vue",
     "inverter-gateway",
+    "terraform-cloudflare-inverter-gateway",
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
     "dbus-event-log",
