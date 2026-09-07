@@ -63,7 +63,7 @@ locals {
     }
     terraform_cloudflare_inverter_gateway = {
       name                        = "terraform-cloudflare-inverter-gateway"
-      description                 = "Terraform for Cloudflare Zero Trust Access protecting inverter-gateway (victron.2560801.xyz)"
+      description                 = "Terraform for Cloudflare Zero Trust Access in front of inverter-gateway"
       topics                      = ["cloudflare", "inverter-gateway", "terraform", "victron", "zero-trust"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
