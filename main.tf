@@ -61,6 +61,13 @@ locals {
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
+    inverter_web_vitrine = {
+      name                        = "inverter-web-vitrine"
+      description                 = "Public read-only Victron status vitrine — here.now (or any static host) proxying inverter-gateway behind Cloudflare Access"
+      topics                      = ["cerbo-gx", "cloudflare", "dashboard", "gateway", "here-now", "mqtt", "proxy", "venus-os", "victron", "zero-trust"]
+      vulnerability_alerts        = true
+      dependabot_security_updates = true
+    }
     terraform_cloudflare_inverter_gateway = {
       name                        = "terraform-cloudflare-inverter-gateway"
       description                 = "Terraform for Cloudflare Zero Trust Access in front of inverter-gateway"
@@ -345,6 +352,7 @@ locals {
     "inverter-dashboard-go",
     "inverter-dashboard-vue",
     "inverter-gateway",
+    "inverter-web-vitrine",
     "terraform-cloudflare-inverter-gateway",
     "dbus-mqtt-battery",
     "dbus-tasmota-pv",
