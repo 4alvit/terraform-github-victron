@@ -1,0 +1,31 @@
+name: Publish Release Assets
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+    - name: Report release
+      uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+      with:
+        script: |
+          const tag = context.ref.replace('refs/tags/', '');
+          console.log('Release published: ' + tag);
+
+          github.rest.repos.createOrUpdateFileContents({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            path: `.releases/${tag}.md`,
+            message: `chore: release ${tag}`,
+            content: Buffer.from(`Release ${tag} published at ${new Date().toISOString()}`).toString('base64')
+          });

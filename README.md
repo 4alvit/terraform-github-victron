@@ -8,6 +8,12 @@
 
 This Terraform configuration manages the entire GitHub infrastructure for the victron-venus organization.
 
+<!-- ci-release-process:start -->
+## CI and deployment
+
+See [CI and deployment workflow](docs/release-workflow.md) for required checks and local commands. This repository uses validation-only policy; application release channels do not apply.
+<!-- ci-release-process:end -->
+
 ## What's Managed
 
 - **Organization settings** (security defaults, permissions)
