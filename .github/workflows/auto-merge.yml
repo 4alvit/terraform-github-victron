@@ -1,43 +1,28 @@
-name: Auto-merge PR
+name: Auto Merge PRs
 
 on:
   pull_request:
-    types: [opened, synchronize, labeled, unlabeled]
-  check_suite:
-    types: [completed]
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled, edited, converted_to_draft]
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, labeled, unlabeled, edited, converted_to_draft]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
   pull-requests: write
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  checks: read
 
 jobs:
   auto-merge:
-    runs-on: ubuntu-latest
-    if: |
-      github.actor == '4alvit' &&
-      contains(github.event.pull_request.labels.*.name, 'auto-merge') &&
-      github.event.pull_request.draft == false &&
-      github.event.pull_request.base.ref == 'main'
-
-    steps:
-      - name: Wait for required checks
-        uses: poseidon/wait-for-status-checks@899c768d191b56eef585c18f8558da19e1f3e707 # v0.6.0
-        with:
-          timeout: 600
-          interval: 10
-          token: ${{ secrets.BOT_PAT }}
-
-      - name: Auto-merge PR
-        # wait-for-status-checks declares no outputs; automerge-action itself
-        # blocks until required checks pass and required reviews are present,
-        # retrying MERGE_RETRIES times.
-        uses: pascalgn/automerge-action@7961b8b5eec56cc088c140b56d864285eabd3f67 # v0.16.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.BOT_PAT }}
-          MERGE_METHOD: squash
-          MERGE_COMMIT_MESSAGE: automatic
-          MERGE_RETRIES: 3
-          MERGE_RETRY_SLEEP: 10000
+    if: >-
+      ((github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) ||
+       (github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository)) &&
+      contains(fromJSON('["4alvit","californiantiramisu","dependabot[bot]","renovate[bot]"]'), github.event.pull_request.user.login) &&
+      contains(github.event.pull_request.labels.*.name, 'automerge') &&
+      !github.event.pull_request.draft
+    uses: victron-venus/venus-os-ci-toolkit/.github/workflows/auto-merge.yml@bb5ac32a58c40a529f021516476cd13744099f73
+    secrets:
+      BOT_PAT: ${{ secrets.BOT_PAT }}
