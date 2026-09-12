@@ -2,6 +2,7 @@
 # Vendored release toolkit; change the toolkit source, then render again.
 # ruff: noqa
 # mypy: ignore-errors
+# pylint: skip-file
 # fmt: off
 """Local entry point for the same checks, packages and release requests as CI.
 
@@ -14,9 +15,12 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = re.compile(r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\Z")
@@ -24,6 +28,7 @@ RC = re.compile(r"v((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))-rc\.([1-9]\d
 
 
 def run(*args: str, capture: bool = False) -> str:
+    """Run a checked command from the release repository root."""
     result = subprocess.run(
         args,
         cwd=ROOT,
@@ -35,11 +40,13 @@ def run(*args: str, capture: bool = False) -> str:
 
 
 def policy() -> dict:
+    """Read the checked-in release policy used by local and hosted operations."""
     return json.loads((ROOT / ".release-policy.json").read_text())
 
 
 def base_version(value: str) -> str:
     # Repository metadata may already contain a SemVer prerelease suffix.
+    """Normalize repository version metadata to a strict SemVer base version."""
     value = value.strip().removeprefix("v").split("-", 1)[0]
     if not VERSION.fullmatch(value):
         raise ValueError(f"Expected X.Y.Z version, got {value!r}")
@@ -47,6 +54,9 @@ def base_version(value: str) -> str:
 
 
 def resolve_version(config: dict, requested: str = "") -> str:
+    """Resolve an explicit version or the configured committed version source."""
+    # Each metadata format is explicit so malformed sources cannot fall through silently.
+    # pylint: disable=too-many-return-statements,too-many-branches
     if requested:
         if not VERSION.fullmatch(requested):
             raise ValueError(
@@ -64,8 +74,6 @@ def resolve_version(config: dict, requested: str = "") -> str:
         if path.suffix == ".json":
             return base_version(json.loads(data)["version"])
         if path.suffix == ".toml":
-            import tomllib
-
             parsed = tomllib.loads(data)
             for section in ("project", "package"):
                 if isinstance(parsed.get(section, {}).get("version"), str):
@@ -75,7 +83,8 @@ def resolve_version(config: dict, requested: str = "") -> str:
             ):
                 return base_version(parsed["workspace"]["package"]["version"])
         match = re.search(
-            r"(?im)^\s*(?:__version__|VERSION|version)\s*[:=]\s*[\"']?([0-9]+\.[0-9]+\.[0-9]+(?:-[\w.]+)?)",
+            r"(?im)^\s*(?:__version__|VERSION|version)\s*[:=]\s*[\"']?"
+            r"([0-9]+\.[0-9]+\.[0-9]+(?:-[\w.]+)?)",
             data,
         )
         if match:
@@ -97,10 +106,12 @@ def resolve_version(config: dict, requested: str = "") -> str:
 
 
 def gh_json(*args: str) -> dict:
+    """Read and decode a GitHub CLI JSON response."""
     return json.loads(run("gh", *args, capture=True))
 
 
 def repository(config: dict) -> str:
+    """Resolve and validate the OWNER/REPO identity for GitHub operations."""
     repo = config.get("repository") or run(
         "gh",
         "repo",
@@ -117,6 +128,7 @@ def repository(config: dict) -> str:
 
 
 def dispatch(args: argparse.Namespace, config: dict) -> None:
+    """Request the default-branch workflow only from a matching clean checkout."""
     if config.get("mode", "release") != "release":
         raise ValueError(
             "This project has validation/deployment policy, not application releases"
@@ -129,7 +141,9 @@ def dispatch(args: argparse.Namespace, config: dict) -> None:
     dirty = run("git", "status", "--porcelain", capture=True)
     if dirty or local != head:
         raise ValueError(
-            "Release requests require a clean checkout at GitHub's default-branch HEAD. Commit, review and merge changes first, then update this checkout."
+            "Release requests require a clean checkout at GitHub's "
+            "default-branch HEAD. Commit, review and merge changes first, "
+            "then update this checkout."
         )
     fields = ["-f", f"channel={args.command}", "-f", f"expected_sha={head}"]
     if args.command == "stable":
@@ -158,13 +172,17 @@ def dispatch(args: argparse.Namespace, config: dict) -> None:
         return
     run(*command)
     print(
-        f"Requested {args.command} for {repo} at {head}. Track: https://github.com/{repo}/actions/workflows/release-pipeline.yml"
+        f"Requested {args.command} for {repo} at {head}. "
+        f"Track: https://github.com/{repo}/actions/workflows/release-pipeline.yml"
     )
     if args.command == "stable":
         print("The stable job waits for the release environment's required reviewer.")
 
 
 def main() -> int:
+    """Route local checks, packaging, inspection and guarded workflow requests."""
+    # Keep command dispatch sequential so publication side effects remain visible.
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     parser = argparse.ArgumentParser(description=__doc__)
     subs = parser.add_subparsers(dest="command", required=True)
     subs.add_parser("check", help="Run the checked-in local validation script")
@@ -198,14 +216,13 @@ def main() -> int:
             script = next((p for p in scripts if (ROOT / p).is_file()), None)
             if not script:
                 raise ValueError(
-                    "Packaging is a platform matrix in release-build.yml; use a remote rc request for the complete target set"
+                    "Packaging is a platform matrix in release-build.yml; use a "
+                    "remote rc request for the complete target set"
                 )
             run("bash", script, version, args.channel)
         elif args.command == "resolve":
             print(resolve_version(config, args.version))
         elif args.command == "collect":
-            import shutil
-
             source, destination = Path(args.source), Path(args.destination)
             destination.mkdir(parents=True, exist_ok=False)
             files = list(source.rglob("*"))

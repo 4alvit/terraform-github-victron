@@ -3,7 +3,9 @@
   "mode": "validation-only",
   "default_branch": "main",
   "validation_workflows": [
-    "validate.yml"
+    "validate.yml",
+    "codeql.yml",
+    "trivy-fs.yml"
   ],
   "local_checks": [
     "bash scripts/ci.sh"
