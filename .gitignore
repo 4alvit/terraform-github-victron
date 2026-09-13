@@ -31,3 +31,6 @@ main.tf.bak
 
 # Saved plans can contain sensitive values.
 *.tfplan
+
+# Reviewed non-secret public release desired state.
+!release-activation.auto.tfvars.json
