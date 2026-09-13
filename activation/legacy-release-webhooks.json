@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "managed_by": "GitHub API; these webhook objects are not in the canonical Terraform configuration or state",
+  "policy": "Release publication must remain separate from production deployment. Keep release-only hooks disabled; preserve unrelated subscriptions on shared hooks.",
+  "reviewed_at": "2026-09-13",
+  "preconditions": [
+    "Re-read repository visibility immediately before mutation; require public",
+    "Re-read hook active/events and compare expected_before",
+    "Do not pass URL, secret or config in PATCH body"
+  ],
+  "changes": [
+    {
+      "repository": "victron-venus/inverter-control",
+      "hook_id": 605549161,
+      "expected_before": {
+        "active": true,
+        "events": [
+          "release"
+        ]
+      },
+      "payload": {
+        "active": false
+      }
+    },
+    {
+      "repository": "victron-venus/inverter-monitoring",
+      "hook_id": 605430998,
+      "expected_before": {
+        "active": true,
+        "events": [
+          "push",
+          "release",
+          "workflow_run"
+        ]
+      },
+      "payload": {
+        "events": [
+          "push",
+          "workflow_run"
+        ]
+      }
+    },
+    {
+      "repository": "victron-venus/inverter-dashboard",
+      "hook_id": 605549211,
+      "expected_before": {
+        "active": true,
+        "events": [
+          "release"
+        ]
+      },
+      "payload": {
+        "active": false
+      }
+    }
+  ]
+}
