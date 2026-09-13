@@ -1,6 +1,8 @@
 # Existing manually created infrastructure, adopted without changing its policy.
 # Keep disabled reviews and archived repository settings as observed.
 
+# This archived OSS project remains public by design; adoption preserves its visibility.
+# trivy:ignore:AVD-GIT-0001
 resource "github_repository" "venus_os_governance" {
   name        = "venus-os-governance"
   description = "Policy engine with approval gates for Venus OS — SOC limits, charge/discharge rules, inverter control policies with audit logging via dbus-event-log [ARCHIVED 2026-08 — superseded by inverter-control built-in safety]"
@@ -27,6 +29,11 @@ resource "github_repository" "venus_os_governance" {
   topics                      = ["approval-gates", "cerbo-gx", "dbus", "governance", "inverter-control", "policy-engine", "python", "soc-limits", "venus-os", "victron"]
 }
 
+# This public root-domain redirect contains only index.html, README.md and .nojekyll.
+# Preserve its existing disabled vulnerability alerts: it has no dependency manifests.
+# These exceptions adopt the verified live settings without changing other repositories.
+# trivy:ignore:AVD-GIT-0001
+# trivy:ignore:AVD-GIT-0003
 resource "github_repository" "website" {
   name                        = "victron-venus.github.io"
   description                 = "Root-domain redirect — real site lives in victron-venus/.github"
