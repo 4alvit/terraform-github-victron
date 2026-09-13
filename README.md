@@ -134,6 +134,50 @@ terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:m
 - ✅ **Secret Scanning & Push Protection**: Enabled `secret_scanning` and `secret_scanning_push_protection` across all 12 organization repositories in `main.tf`
 - ✅ **Terraform CI Validation**: GitHub Actions workflow for `terraform fmt -check` and `tflint` on pull requests
 
+## Administrator branch-merge policy
+
+Repository administrators have a permanent `RepositoryRole` bypass (actor ID `5`,
+mode `always`) on the default-branch rulesets, including the additive
+`Release standard - required CI gate` ruleset. An administrator can explicitly use
+`gh pr merge --admin` while CI is queued. The rulesets remain active: ordinary
+contributors must satisfy the existing reviews, signatures and strict `CI gate`,
+and their workflows continue to run.
+
+Version-tag immutability and required release-environment approvals retain their
+separate policies. The administrator merge override is managed in Terraform so
+future applies preserve it.
+
+## Adopted infrastructure
+
+`adopted-infrastructure.tf` and `adopted-imports.tf` record the existing archived
+`venus-os-governance` repository, the root redirect repository, five disabled
+Copilot rulesets, two GitHub Pages sites and environments, their four deployment
+branch policies, five existing administrator grants, and the active monitoring
+webhook. The archived default
+branch ruleset is managed with the other default rulesets. These imports retain
+the live configuration, including the website default branch `feature/redirect`
+and Pages source `main`; they do not activate disabled rules or unarchive code.
+The topic lists in `main.tf` also preserve the values observed on GitHub.
+
+The GitHub provider omits merge settings when reading archived repositories and
+skips API updates while they remain archived. The initial governance import
+therefore hydrates those state fields from the explicitly verified settings.
+
+The active `inverter-monitoring` webhook retains its existing receiver URL,
+`push` and `workflow_run` events, JSON payloads and TLS certificate verification.
+Its original HMAC secret is verified against the live receiver and supplied only
+through the sensitive HCP inputs `existing_webhook_url` and
+`existing_webhook_secret`. GitHub returns a masked secret during import; the
+initial plan replaces that mask with the verified original receiver secret.
+No secret value is committed or newly generated.
+
+Two inactive retired control/dashboard webhooks and write-only Actions secrets
+remain externally managed and untouched. The inventory covers all 27 repository
+settings, all 73 rulesets, 19 environments and their 21 branch policies, both
+Pages sites, the five explicit administrator grants and the active webhook.
+There are no additional deploy keys, teams or organization webhooks to import.
+No new lifecycle ignore rules hide differences.
+
 ## File Structure
 
 ```

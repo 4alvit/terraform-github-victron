@@ -67,6 +67,13 @@ resource "github_repository_ruleset" "release_quality_gate" {
   repository  = each.value
   target      = "branch"
   enforcement = "active"
+  # Permanent administrator override for branch merges, including queued CI.
+  # Other actors remain subject to the active, strict CI gate below.
+  bypass_actors {
+    actor_id    = 5
+    actor_type  = "RepositoryRole"
+    bypass_mode = "always"
+  }
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]

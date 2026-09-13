@@ -1,5 +1,12 @@
 # State Migration Guide
 
+This is the historical module-address migration guide. Do not rerun these moves
+on the current canonical workspace: verify existing addresses first. The current
+manual-infrastructure adoption uses the explicit IDs in `adopted-imports.tf`.
+It restores the archived `venus-os-governance` repository and its default ruleset
+to management while retaining `archived = true`; only the old enabled security
+update resources remain retired with `destroy = false`.
+
 This refactor moves all `github_repository` resources (and their
 `vulnerability_alerts` / `dependabot_security_updates` children) from flat
 resource blocks into the `module.repos` for_each.
