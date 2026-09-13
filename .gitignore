@@ -28,3 +28,6 @@ commit.txt
 logs
 tfplan
 main.tf.bak
+
+# Saved plans can contain sensitive values.
+*.tfplan
