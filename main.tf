@@ -29,7 +29,7 @@ locals {
     inverter_control = {
       name                        = "inverter-control"
       description                 = "Grid-zero feed-in control for Victron inverters with Home Assistant integration and web dashboard"
-      topics                      = ["cerbo-gx", "dbus", "emporia-vue", "energy-management", "ess", "external-control", "grid-tie", "hass", "home-assistant", "mqtt", "python", "quattro", "raspberry-pi", "solar", "venus-os", "victron", "vm-3p75ct"]
+      topics                      = ["battery", "cerbo-gx", "dbus", "emporia-vue", "energy", "energy-management", "ess", "external-control", "grid-tie", "hass", "home-assistant", "inverter", "meter", "mqtt", "power", "python", "quattro", "raspberry-pi", "sensor", "solar"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
@@ -43,14 +43,14 @@ locals {
     inverter_dashboard_go = {
       name                        = "inverter-dashboard-go"
       description                 = "Real-time Victron inverter web dashboard (Go) — same role as inverter-dashboard, implemented in Go with MQTT and optional Home Assistant direct control"
-      topics                      = ["cerbo-gx", "dashboard", "docker", "go", "golang", "hass", "home-assistant", "mqtt", "real-time", "venus-os", "victron", "websocket"]
+      topics                      = ["battery", "cerbo-gx", "dashboard", "docker", "energy", "go", "golang", "hass", "home-assistant", "inverter", "mqtt", "power", "real-time", "sensor", "solar", "venus-os", "victron", "websocket"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     inverter_desktop = {
       name                        = "inverter-desktop"
       description                 = "Desktop version of Web dashboard for Victron inverter control with Home Assistant integration"
-      topics                      = ["cerbo-gx", "dashboard", "energy-management", "grid-tie", "hass", "home-assistant", "mqtt", "venus-os", "victron", "web-dashboard"]
+      topics                      = ["battery", "cerbo-gx", "dashboard", "energy", "energy-management", "grid-tie", "hass", "home-assistant", "inverter", "mqtt", "power", "sensor", "solar", "venus-os", "victron", "web-dashboard"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
@@ -85,42 +85,42 @@ locals {
     dbus_mqtt_battery = {
       name                        = "dbus-mqtt-battery"
       description                 = "MQTT to D-Bus bridge for JBD BMS batteries on Victron Venus OS with DVCC support"
-      topics                      = ["battery-management", "bms", "cerbo-gx", "dbus", "dvcc", "jbd-bms", "lifepo4", "mqtt", "python", "venus-os", "victron"]
+      topics                      = ["battery", "battery-management", "bms", "cerbo-gx", "dbus", "dvcc", "energy", "jbd-bms", "lifepo4", "mqtt", "power", "python", "sensor", "solar", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     dbus_tasmota_pv = {
       name                        = "dbus-tasmota-pv"
       description                 = "Tasmota power meter to Victron D-Bus PV inverter bridge for Venus OS"
-      topics                      = ["dbus", "mqtt", "pv-inverter", "python", "solar", "tasmota", "venus-os", "victron"]
+      topics                      = ["dbus", "energy", "inverter", "meter", "mqtt", "power", "pv-inverter", "python", "sensor", "solar", "tasmota", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     dbus_emporia_vue = {
       name                        = "dbus-emporia-vue"
       description                 = "Emporia Vue submeter channels as individual Victron D-Bus AC loads for Venus OS — Home Assistant WebSocket power data via com.victronenergy.acload services"
-      topics                      = ["acload", "cerbo-gx", "dbus", "emporia-vue", "energy-management", "hass", "home-assistant", "python", "submetering", "venus-os", "victron", "websocket"]
+      topics                      = ["acload", "cerbo-gx", "dbus", "emporia-vue", "energy", "energy-management", "hass", "home-assistant", "inverter", "meter", "mqtt", "power", "python", "sensor", "solar", "submetering", "venus-os", "victron", "websocket"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     esphome_jbd_bms_mqtt = {
       name                        = "esphome-jbd-bms-mqtt"
       description                 = "ESPHome ESP32 Bluetooth proxy for JBD BMS batteries, publishing to MQTT for Victron Venus OS"
-      topics                      = ["battery-monitor", "bluetooth", "cerbo-gx", "esp32", "esphome", "jbd-bms", "lifepo4", "mqtt", "venus-os", "victron"]
+      topics                      = ["battery", "battery-monitor", "ble", "bluetooth", "bms", "cerbo-gx", "energy", "esp32", "esphome", "jbd-bms", "lifepo4", "mqtt", "sensor", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     venus_os_observability = {
       name                        = "venus-os-observability"
       description                 = "OpenTelemetry/Prometheus observability for Venus OS — D-Bus event tracing, inverter metrics, distributed tracing"
-      topics                      = ["cerbo-gx", "dbus", "distributed-tracing", "grafana", "mqtt", "opentelemetry", "prometheus", "python", "tempo", "venus-os", "victron"]
+      topics                      = ["cerbo-gx", "dbus", "distributed-tracing", "energy", "grafana", "inverter", "mqtt", "opentelemetry", "power", "prometheus", "python", "sensor", "solar", "tempo", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     inverter_monitoring = {
       name                        = "inverter-monitoring"
       description                 = "Telegraf + InfluxDB + Grafana monitoring stack for Victron inverter systems"
-      topics                      = ["cerbo-gx", "docker", "energy-monitoring", "grafana", "influxdb", "iot", "mqtt", "python", "telegraf", "time-series", "venus-os", "victron"]
+      topics                      = ["battery", "cerbo-gx", "dbus", "docker", "energy", "energy-monitoring", "grafana", "influxdb", "inverter", "iot", "meter", "mqtt", "power", "python", "sensor", "solar", "telegraf", "time-series", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
@@ -134,21 +134,21 @@ locals {
     dbus_event_log = {
       name                        = "dbus-event-log"
       description                 = "Audit log for D-Bus commands and inverter state transitions with chronology, filtering, and export — SQLite/TimescaleDB storage, MQTT publishing, CLI query tool, Grafana dashboards"
-      topics                      = ["audit-log", "cerbo-gx", "dbus", "inverter", "mqtt", "python", "sqlite", "timescaledb", "venus-os", "victron"]
+      topics                      = ["audit-log", "cerbo-gx", "dbus", "energy", "inverter", "mqtt", "python", "sensor", "sqlite", "timescaledb", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     dbus_esphome_grid_sensor = {
       name                        = "dbus-esphome-grid-sensor"
       description                 = "ESP32 CT sensor for grid power monitoring with D-Bus service for Venus OS"
-      topics                      = ["esp32", "esphome", "ct-sensor", "grid-meter", "mqtt", "dbus", "venus-os", "victron", "docker", "python", "home-automation"]
+      topics                      = ["ct-sensor", "dbus", "docker", "energy", "esp32", "esphome", "grid", "grid-meter", "home-automation", "meter", "mqtt", "power", "python", "sensor", "solar", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
     venus_os_integration_patterns = {
       name                        = "venus-os-integration-patterns"
       description                 = "Reference implementations for common Venus OS integrations — MQTT↔D-Bus bridges, HTTP API wrappers, scheduled control, Home Assistant automations"
-      topics                      = ["cerbo-gx", "dbus", "fastapi", "ha-automation", "home-assistant", "integration-patterns", "mqtt", "python", "venus-os", "victron"]
+      topics                      = ["cerbo-gx", "dbus", "energy", "fastapi", "ha-automation", "home-assistant", "integration-patterns", "inverter", "mqtt", "power", "python", "sensor", "solar", "venus-os", "victron"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
@@ -255,17 +255,9 @@ module "repos" {
 # See STATE_MIGRATION.md for the full command list.
 
 # =============================================================================
-# Archived: venus-os-governance resources must be removed from state without
-# destruction. Use `removed` blocks (not moved) so Terraform drops them from
-# state and leaves the GitHub side untouched.
+# Archived: the repository is managed in adopted-infrastructure.tf. Its former
+# enabled security-update resources stay retired without changing GitHub.
 # =============================================================================
-removed {
-  from = github_repository.venus_os_governance
-
-  lifecycle {
-    destroy = false
-  }
-}
 
 removed {
   from = github_repository_vulnerability_alerts.venus_os_governance
@@ -362,6 +354,7 @@ locals {
     "venus-os-observability",
     "venus-os-integration-patterns",
     "venus-os-ci-toolkit",
+    "venus-os-governance",
     "inverter-monitoring",
     "integration-tests",
     "dbus-esphome-grid-sensor",

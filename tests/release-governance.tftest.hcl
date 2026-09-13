@@ -1,3 +1,8 @@
+variables {
+  existing_webhook_url    = "https://example.invalid/webhook"
+  existing_webhook_secret = "test-fixture-not-a-live-secret"
+}
+
 # Every run is a plan against a mocked provider in a disposable standalone copy.
 mock_provider "github" {
   override_during = plan
@@ -40,6 +45,26 @@ run "public_protections_keep_publication_disabled" {
       github_actions_variable.release_publication_enabled["app"].value == "false"
     )
     error_message = "Adding protections must not enable publication or create environments for validation-only repositories."
+  }
+  assert {
+    condition = alltrue([
+      for gate in github_repository_ruleset.release_quality_gate : (
+        gate.target == "branch" &&
+        gate.enforcement == "active" &&
+        length(gate.bypass_actors) == 1 &&
+        one(gate.bypass_actors).actor_id == 5 &&
+        one(gate.bypass_actors).actor_type == "RepositoryRole" &&
+        one(gate.bypass_actors).bypass_mode == "always" &&
+        one(one(gate.rules).required_status_checks).strict_required_status_checks_policy == true &&
+        one(one(gate.rules).required_status_checks).do_not_enforce_on_create == false &&
+        one(one(one(gate.rules).required_status_checks).required_check).context == "CI gate"
+      )
+    ])
+    error_message = "Branch gates must retain strict CI enforcement and the permanent repository-admin bypass."
+  }
+  assert {
+    condition     = length(github_repository_ruleset.immutable_release_tags["app"].bypass_actors) == 0
+    error_message = "Administrator branch-merge policy must not permit immutable release tag rewrites."
   }
   assert {
     condition = (

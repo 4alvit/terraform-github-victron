@@ -5,8 +5,8 @@ temporary=$(mktemp -d "${TMPDIR:-/tmp}/release-governance-test.XXXXXX")
 trap 'rm -rf "$temporary"' EXIT
 mkdir -p "$temporary/tests" "$temporary/provider-cache"
 touch "$temporary/empty.tfrc"
-cp release-standards.tf tests/release-governance/main.tf "$temporary/"
-cp tests/release-governance.tftest.hcl "$temporary/tests/"
+cp release-standards.tf adopted-infrastructure.tf tests/release-governance/main.tf "$temporary/"
+cp tests/release-governance.tftest.hcl tests/adopted-infrastructure.tftest.hcl "$temporary/tests/"
 if [[ -f .terraform.lock.hcl ]]; then
   cp .terraform.lock.hcl "$temporary/"
 fi
