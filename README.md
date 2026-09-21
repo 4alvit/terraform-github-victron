@@ -134,18 +134,15 @@ terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:m
 - ✅ **Secret Scanning & Push Protection**: Enabled `secret_scanning` and `secret_scanning_push_protection` across all 12 organization repositories in `main.tf`
 - ✅ **Terraform CI Validation**: GitHub Actions workflow for `terraform fmt -check` and `tflint` on pull requests
 
-## Administrator branch-merge policy
+## Required CI for administrator merges
 
-Repository administrators have a permanent `RepositoryRole` bypass (actor ID `5`,
-mode `always`) on the default-branch rulesets, including the additive
-`Release standard - required CI gate` ruleset. An administrator can explicitly use
-`gh pr merge --admin` while CI is queued. The rulesets remain active: ordinary
-contributors must satisfy the existing reviews, signatures and strict `CI gate`,
-and their workflows continue to run.
+The additive `Release standard - required CI gate` ruleset has no bypass actors.
+Administrators must wait for a successful `CI gate` on the current PR head,
+including dependency updates. This prevents a broken compiler or partial CodeQL
+update from entering main through an administrator override.
 
-Version-tag immutability and required release-environment approvals retain their
-separate policies. The administrator merge override is managed in Terraform so
-future applies preserve it.
+The separate default review ruleset and release-environment approval policy
+retain their existing settings. Immutable version tags remain protected.
 
 ## Adopted infrastructure
 
