@@ -91,3 +91,6 @@ Release-only hooks remain disabled; shared hooks retain their unrelated event
 subscriptions. Hook URLs, secrets, configuration and private receiver repositories
 are deliberately outside this manifest. Candidate publication must not trigger
 production deployment; stable deployment remains a separate explicit operation.
+
+The additive required CI ruleset has no bypass actors. Administrator dependency
+merges must also wait for a successful `CI gate`; release approval is independent.
