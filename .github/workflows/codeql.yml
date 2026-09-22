@@ -2,13 +2,6 @@ name: "CodeQL"
 
 on:
   workflow_call: {}
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  schedule:
-    - cron: "0 0 * * 1"
-
 permissions:
   contents: read
 
@@ -45,3 +38,4 @@ jobs:
         uses: github/codeql-action/analyze@db488ddef3bf6cb639b32c2e9a7c0a7ea8271d28 # v4.37.8
         with:
           category: "/language:${{matrix.language}}"
+    timeout-minutes: 30
