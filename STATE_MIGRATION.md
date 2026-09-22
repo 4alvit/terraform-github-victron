@@ -1,5 +1,50 @@
 # State Migration Guide
 
+## Retired `dbus-evcharger` (2026-09-22)
+
+The charger service has moved into `dbus-ev`. The archived `dbus-evcharger`
+repository and its existing GitHub settings are preserved, but no longer managed
+by this configuration. The repository inventory, default ruleset inventory,
+release activation lists and examples exclude it. Do not import it again.
+
+Before the first apply of this removal, forget the following addresses in the
+canonical `victron-venus/github-infrastructure` workspace. Terraform 1.15.7 does
+not accept instance keys in `removed.from`, so use an explicit state migration
+instead of removing the entire shared resource or module. `state rm` only
+removes bindings; it does not delete anything on GitHub.
+
+Run from this configuration, with the canonical cloud backend initialized:
+
+```bash
+# State contains secrets. Keep this backup private and outside the repository.
+umask 077
+backup_dir=$(mktemp -d "${TMPDIR:-/tmp}/dbus-evcharger-state.XXXXXX")
+terraform state pull > "$backup_dir/before.tfstate"
+
+retired_addresses=(
+  'module.repos["dbus_evcharger"]'
+  'data.github_repository.release_standard["dbus-evcharger"]'
+  'github_repository_ruleset.default_remaining["dbus-evcharger"]'
+  'github_repository_ruleset.release_quality_gate["dbus-evcharger"]'
+  'github_repository_ruleset.immutable_release_tags["dbus-evcharger"]'
+  'github_repository_environment.release_standard["dbus-evcharger/release"]'
+  'github_repository_environment_deployment_policy.release_standard["dbus-evcharger/release"]'
+  'github_actions_variable.release_publication_enabled["dbus-evcharger"]'
+)
+terraform state rm -dry-run "${retired_addresses[@]}"
+# Review: exactly 10 instances (9 managed resources and 1 data source).
+terraform state rm -lock-timeout=60s "${retired_addresses[@]}"
+terraform plan
+```
+
+The final full plan must not propose recreating or deleting the retired
+repository or its settings. Remove it from any external variable overrides too,
+if they still list it. After applying output-only changes, a full plan should
+report no changes. These one-time state removals are already completed in the
+canonical workspace; do not rerun them there.
+
+## Historical module-address migration
+
 This is the historical module-address migration guide. Do not rerun these moves
 on the current canonical workspace: verify existing addresses first. The current
 manual-infrastructure adoption uses the explicit IDs in `adopted-imports.tf`.
@@ -96,9 +141,6 @@ terraform state mv github_repository.virtual_battery module.repos["dbus_virtual_
 # dbus_pump
 terraform state mv github_repository.dbus_pump module.repos["dbus_pump"].github_repository.this
 
-# dbus_evcharger
-terraform state mv github_repository.dbus_evcharger module.repos["dbus_evcharger"].github_repository.this
-
 # dbus_ev
 terraform state mv github_repository.dbus_ev module.repos["dbus_ev"].github_repository.this
 
@@ -109,7 +151,7 @@ for repo in inverter_control inverter_dashboard inverter_dashboard_go inverter_d
             esphome_jbd_bms_mqtt venus_os_observability inverter_monitoring \
             integration_tests dbus_event_log dbus_esphome_grid_sensor \
             venus_os_integration_patterns venus_os_ci_toolkit setup_helper \
-            dbus_virtual_battery dbus_pump dbus_evcharger dbus_ev; do
+            dbus_virtual_battery dbus_pump dbus_ev; do
   terraform state mv \
     "github_repository_vulnerability_alerts.${repo}" \
     "module.repos[\"${repo}\"].github_repository_vulnerability_alerts.this[0]"
@@ -122,7 +164,7 @@ for repo in inverter_control inverter_dashboard inverter_dashboard_go inverter_d
             esphome_jbd_bms_mqtt venus_os_observability inverter_monitoring \
             integration_tests dbus_event_log dbus_esphome_grid_sensor \
             venus_os_integration_patterns venus_os_ci_toolkit setup_helper \
-            dbus_pump dbus_evcharger dbus_ev; do
+            dbus_pump dbus_ev; do
   terraform state mv \
     "github_repository_dependabot_security_updates.${repo}" \
     "module.repos[\"${repo}\"].github_repository_dependabot_security_updates.this[0]"

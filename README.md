@@ -170,9 +170,12 @@ initial plan replaces that mask with the verified original receiver secret.
 No secret value is committed or newly generated.
 
 Two inactive retired control/dashboard webhooks and write-only Actions secrets
-remain externally managed and untouched. The inventory covers all 27 repository
-settings, all 73 rulesets, 19 environments and their 21 branch policies, both
-Pages sites, the five explicit administrator grants and the active webhook.
+remain externally managed and untouched. The archived `dbus-evcharger` repository
+and its settings are also externally managed after consolidation into `dbus-ev`;
+see [the retirement migration](STATE_MIGRATION.md#retired-dbus-evcharger-2026-09-22).
+The inventory covers 26 repository settings, 70 rulesets, 18 environments and
+their 20 branch policies, both Pages sites, the five explicit administrator grants
+and the active webhook.
 There are no additional deploy keys, teams or organization webhooks to import.
 No new lifecycle ignore rules hide differences.
 

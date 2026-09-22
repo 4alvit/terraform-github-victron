@@ -31,7 +31,7 @@ flowchart TB
         ~~~ PV["dbus-tasmota-pv"]
         ~~~ EMP["dbus-emporia-vue"]
         ~~~ GRD["dbus-esphome-grid-sensor"]
-        ~~~ EV["dbus-evcharger / dbus-ev"]
+        ~~~ EV["dbus-ev"]
         ~~~ PMP["dbus-pump"]
         ~~~ IC["inverter-control"]
         ~~~ EL["dbus-event-log"]
@@ -127,8 +127,7 @@ flowchart TB
 | [dbus-tasmota-pv](https://github.com/victron-venus/dbus-tasmota-pv) | Tasmota power meter → D-Bus PV inverter (daemontools multilog) |
 | [dbus-emporia-vue](https://github.com/victron-venus/dbus-emporia-vue) | Emporia Vue submeters → D-Bus AC load (one per channel) |
 | [dbus-esphome-grid-sensor](https://github.com/victron-venus/dbus-esphome-grid-sensor) | ESP32 CT sensor → D-Bus grid meter |
-| [dbus-evcharger](https://github.com/victron-venus/dbus-evcharger) | EV charge point → D-Bus charger (OCPP via Cerbo MQTT) |
-| [dbus-ev](https://github.com/victron-venus/dbus-ev) | EV charging session data → D-Bus |
+| [dbus-ev](https://github.com/victron-venus/dbus-ev) | EV vehicle telemetry and charging data → D-Bus and MQTT |
 | [dbus-pump](https://github.com/victron-venus/dbus-pump) | Water tank level / pump → D-Bus tank |
 | [dbus-virtual-battery](https://github.com/victron-venus/dbus-virtual-battery) | Virtual battery for no-BMS chains |
 | [dbus-event-log](https://github.com/victron-venus/dbus-event-log) | Audit log of D-Bus commands & state transitions |
