@@ -197,13 +197,6 @@ locals {
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
-    dbus_evcharger = {
-      name                        = "dbus-evcharger"
-      description                 = "Venus OS D-Bus EV charger (wallbox) service publishing com.victronenergy.evcharger for VRM/GUIv2"
-      topics                      = ["cerbo-gx", "dbus", "ev", "evcharger", "python", "venus-os", "victron"]
-      vulnerability_alerts        = true
-      dependabot_security_updates = true
-    }
     dbus_ev = {
       name                        = "dbus-ev"
       description                 = "Venus OS D-Bus EV vehicle service publishing com.victronenergy.ev (SoC, range) for VRM/GUIv2"
@@ -362,7 +355,6 @@ locals {
     "dbus-virtual-battery",
     "SetupHelper",
     "dbus-pump",
-    "dbus-evcharger",
     "dbus-ev",
   ]
 }

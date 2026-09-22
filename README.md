@@ -134,12 +134,13 @@ terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:m
 - ✅ **Secret Scanning & Push Protection**: Enabled `secret_scanning` and `secret_scanning_push_protection` across all 12 organization repositories in `main.tf`
 - ✅ **Terraform CI Validation**: GitHub Actions workflow for `terraform fmt -check` and `tflint` on pull requests
 
-## Required CI for administrator merges
+## Administrator merge override
 
-The additive `Release standard - required CI gate` ruleset has no bypass actors.
-Administrators must wait for a successful `CI gate` on the current PR head,
-including dependency updates. This prevents a broken compiler or partial CodeQL
-update from entering main through an administrator override.
+The additive `Release standard - required CI gate` keeps strict CI requirements
+for normal merges. Repository administrators (role ID 5) can explicitly bypass
+this gate when merging a pull request. The `pull_request` bypass does not allow
+direct pushes. Archived repositories retain their existing rules without a new
+bypass grant.
 
 The separate default review ruleset and release-environment approval policy
 retain their existing settings. Immutable version tags remain protected.
@@ -169,9 +170,12 @@ initial plan replaces that mask with the verified original receiver secret.
 No secret value is committed or newly generated.
 
 Two inactive retired control/dashboard webhooks and write-only Actions secrets
-remain externally managed and untouched. The inventory covers all 27 repository
-settings, all 73 rulesets, 19 environments and their 21 branch policies, both
-Pages sites, the five explicit administrator grants and the active webhook.
+remain externally managed and untouched. The archived `dbus-evcharger` repository
+and its settings are also externally managed after consolidation into `dbus-ev`;
+see [the retirement migration](STATE_MIGRATION.md#retired-dbus-evcharger-2026-09-22).
+The inventory covers 26 repository settings, 70 rulesets, 18 environments and
+their 20 branch policies, both Pages sites, the five explicit administrator grants
+and the active webhook.
 There are no additional deploy keys, teams or organization webhooks to import.
 No new lifecycle ignore rules hide differences.
 

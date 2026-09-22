@@ -71,7 +71,7 @@ must remain local and uncommitted. Recheck live visibility and default branches
 before activation. Changing the enabled-publication set is a separate reviewed
 plan after the release preconditions have passed.
 
-`bash scripts/ci.sh` also runs six plan-only Terraform contract tests against a
+`bash scripts/ci.sh` also runs plan-only Terraform contract tests against a
 mocked GitHub provider in a temporary copy with no backend or credentials. They
 exercise public opt-in, default-disabled publication, private exclusion, and
 rejection of private or undeclared publication targets. These tests never plan or
@@ -92,5 +92,8 @@ subscriptions. Hook URLs, secrets, configuration and private receiver repositori
 are deliberately outside this manifest. Candidate publication must not trigger
 production deployment; stable deployment remains a separate explicit operation.
 
-The additive required CI ruleset has no bypass actors. Administrator dependency
-merges must also wait for a successful `CI gate`; release approval is independent.
+The additive required CI ruleset grants repository administrators (role ID 5)
+a `pull_request` bypass on active public repositories. Administrators may
+explicitly override CI when merging a PR; ordinary merges still require a
+successful strict `CI gate`. This grant does not permit direct pushes and is not
+added to archived repositories. Release approval remains independent.
