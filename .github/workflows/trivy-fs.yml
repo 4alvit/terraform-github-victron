@@ -2,13 +2,6 @@ name: Trivy Filesystem Scan
 
 on:
   workflow_call: {}
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: '0 5 * * 2'  # Weekly on Tuesdays at 5:00 AM UTC
-
 jobs:
   trivy-scan:
     name: Trivy FS Scan
@@ -18,24 +11,25 @@ jobs:
       contents: read
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@d2a0b60797ff03db6132bd4e2b293f9b37081297
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-        scanners: vuln,secret,misconfig
-        severity: HIGH,CRITICAL
-        exit-code: '1'
-        ignore-unfixed: false
-        limit-severities-for-sarif: true
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@d2a0b60797ff03db6132bd4e2b293f9b37081297
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          scanners: vuln,secret,misconfig
+          severity: HIGH,CRITICAL
+          exit-code: '1'
+          ignore-unfixed: false
+          limit-severities-for-sarif: true
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      if: always()
-      uses: github/codeql-action/upload-sarif@5ba2889ada762081db2c4f32a729827dce632c7b # v3
-      with:
-        sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@5ba2889ada762081db2c4f32a729827dce632c7b # v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+    timeout-minutes: 30
