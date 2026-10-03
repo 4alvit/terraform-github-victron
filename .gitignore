@@ -34,3 +34,7 @@ main.tf.bak
 
 # Reviewed non-secret public release desired state.
 !release-activation.auto.tfvars.json
+
+# Generated Python CI helper caches
+__pycache__/
+*.py[cod]
