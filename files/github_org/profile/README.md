@@ -1,6 +1,6 @@
 # Victron Venus
 
-Open-source tools for **Victron Energy** systems on **Venus OS** — grid-zero control, battery/PV bridges, dashboards, and observability.
+Open-source tools for **Victron Energy** systems on **Venus OS** — grid-zero control, thermostat integration, battery/PV bridges, dashboards, and observability.
 
 Created by [@4alvit](https://github.com/4alvit).
 
@@ -14,126 +14,61 @@ Created by [@4alvit](https://github.com/4alvit).
 ## System architecture
 
 ```mermaid
-flowchart TB
-    subgraph HW["Hardware"]
-        direction TB
-        CERBO["Cerbo GX / Venus OS"]
-        ~~~ BMS["JBD BMS / LiFePO4"]
-        ~~~ ESP["ESP32 + ESPHome"]
-        ~~~ TAS["Tasmota energy meter"]
-        ~~~ EVCHG["EV charger (OCPP)"]
-        ~~~ PUMP["Water tank / pump"]
-    end
+flowchart LR
+    HW["Hardware\nCerbo GX + meters / BMS / EV / pump"]
+    VENUS["Venus OS packages\ndbus-* · inverter-control · OTel"]
+    MQTT["MQTT broker"]
+    UI["Dashboards & tools\ngo / python / vue / desktop / mcp"]
+    EDGE["inverter-gateway\n+ web vitrine"]
+    MON["inverter-monitoring\nTelegraf / Influx / Grafana"]
 
-    subgraph CTL["Control (Venus OS packages)"]
-        direction TB
-        BM["dbus-mqtt-battery"]
-        ~~~ PV["dbus-tasmota-pv"]
-        ~~~ EMP["dbus-emporia-vue"]
-        ~~~ GRD["dbus-esphome-grid-sensor"]
-        ~~~ EV["dbus-ev"]
-        ~~~ PMP["dbus-pump"]
-        ~~~ IC["inverter-control"]
-        ~~~ EL["dbus-event-log"]
-        ~~~ OBS["venus-os-observability"]
-    end
-
-    subgraph BRG["Bridge services"]
-        direction TB
-        ESPH["esphome-jbd-bms-mqtt"]
-        ~~~ FG["fastapi-mqtt-gateway"]
-        ~~~ MO["mqtt-observability-opentelemetry"]
-    end
-
-    subgraph DAT["Data & analytics"]
-        direction TB
-        RAG["energy-data-rag-pipeline"]
-        ~~~ SF["solar-forecast-langgraph"]
-    end
-
-    subgraph DEV["Development & ops"]
-        direction TB
-        IT["integration-tests"]
-        ~~~ TFV["terraform-github-victron"]
-        ~~~ TF4["terraform-github-4alvit"]
-        ~~~ BUILD["iot-project-builder-profile (4alvit)"]
-        ~~~ CITK["venus-os-ci-toolkit"]
-    end
-
-    subgraph UI["Monitoring & dashboards"]
-        direction TB
-        MQTT["MQTT broker"]
-        ~~~ IGW["inverter-gateway"]
-        ~~~ DGO["inverter-dashboard-go"]
-        ~~~ DPY["inverter-dashboard"]
-        ~~~ DVUE["inverter-dashboard-vue"]
-        ~~~ DT["inverter-desktop"]
-        ~~~ MON["inverter-monitoring"]
-        ~~~ VIT["inverter-web-vitrine"]
-        ~~~ MCP["mcp-venus-os"]
-    end
-
-    ESP -->|"BLE→MQTT"| BM
-    TAS -->|"HTTP"| PV
-    EVCHG -.->|"MQTT"| EV
-    PUMP -.->|"MQTT"| PMP
-    BM -->|"D-Bus"| CERBO
-    PV -->|"D-Bus"| CERBO
-    EMP -->|"D-Bus"| CERBO
-    GRD -->|"D-Bus"| CERBO
-    EV -->|"D-Bus"| CERBO
-    PMP -->|"D-Bus"| CERBO
-    IC -->|"D-Bus"| CERBO
-    EL -->|"D-Bus monitor"| CERBO
-    OBS -->|"OTel tracing"| CERBO
-
-    ESP -.->|"BLE→MQTT"| ESPH
-    ESPH -.-> BM
-    FG -.->|"REST/WS→MQTT"| MQTT
-    MO -.->|"OTel→metrics/traces"| MQTT
-
-    IC -->|"inverter/state"| MQTT
-    RAG -->|"RAG pipeline"| DOCS["Victron docs + community"]
-    SF -->|"Forecast"| MQTT
-
-    MQTT --> IGW
-    IGW -->|"HTTPS + Access"| VIT
-    MQTT --> DGO
-    MQTT --> DPY
-    MQTT --> DVUE
-    MQTT --> DT
+    HW -->|"D-Bus"| VENUS
+    VENUS -->|"state / metrics"| MQTT
+    MQTT --> UI
+    MQTT --> EDGE
     MQTT --> MON
-    MQTT --> MCP
 
-    style IC fill:#4ecdc4,color:#000
-    style DGO fill:#00ADD8,color:#fff
-    style DPY fill:#3776ab,color:#fff
-    style DT fill:#24c8db,color:#000
-    style OBS fill:#8e44ad,color:#fff
-    style IGW fill:#f48120,color:#fff
-    style VIT fill:#5b8cff,color:#fff
+    style VENUS fill:#4ecdc4,color:#000
+    style EDGE fill:#f48120,color:#fff
+    style UI fill:#00ADD8,color:#fff
 ```
 
-> **ESP32 setup:** Flash [esphome-jbd-bms-mqtt](https://github.com/victron-venus/esphome-jbd-bms-mqtt) separately (not via Venus PackageManager). See [INSTALL.md](../docs/INSTALL.md).
+[Detailed architecture →](https://github.com/victron-venus/.github/blob/main/docs/architecture.md) (full repo graph and protocols).
+
+> **ESP32 setup:** Flash [esphome-jbd-bms-mqtt](https://github.com/victron-venus/esphome-jbd-bms-mqtt) separately (not via Venus PackageManager). See [INSTALL.md](https://github.com/victron-venus/.github/blob/main/docs/INSTALL.md).
 
 ## Repositories
+
+Browse the [searchable public project catalog](https://victron-venus.github.io/.github/projects.html)
+for deployment targets and related tools. Each repository owns its installation
+requirements and release lifecycle; availability here does not imply a live deployment.
 
 ### Core control & bridging
 
 | Repository | Role |
 |------------|------|
 | [inverter-control](https://github.com/victron-venus/inverter-control) | Grid-zero ESS external control (4 s cadence, EV from D-Bus) |
+| [inverter-climate](https://github.com/victron-venus/inverter-climate) | Native Venus OS thermostat integration via Home Assistant, with room temperature, optional GUI v2 Heat/Off and setpoint controls, and energy-aware preheating |
 | [dbus-mqtt-battery](https://github.com/victron-venus/dbus-mqtt-battery) | MQTT → D-Bus bridge for JBD BMS batteries (DVCC, reboot persistence) |
 | [dbus-tasmota-pv](https://github.com/victron-venus/dbus-tasmota-pv) | Tasmota power meter → D-Bus PV inverter (daemontools multilog) |
 | [dbus-emporia-vue](https://github.com/victron-venus/dbus-emporia-vue) | Emporia Vue submeters → D-Bus AC load (one per channel) |
 | [dbus-esphome-grid-sensor](https://github.com/victron-venus/dbus-esphome-grid-sensor) | ESP32 CT sensor → D-Bus grid meter |
-| [dbus-ev](https://github.com/victron-venus/dbus-ev) | EV vehicle telemetry and charging data → D-Bus and MQTT |
-| [dbus-pump](https://github.com/victron-venus/dbus-pump) | Water tank level / pump → D-Bus tank |
+| [dbus-ev](https://github.com/victron-venus/dbus-ev) | Mercedes or Home Assistant vehicle telemetry → D-Bus; optional integrated Mercedes charger telemetry |
+| [dbus-pump](https://github.com/victron-venus/dbus-pump) | Home Assistant water tank, pump and valve → native D-Bus services |
 | [dbus-virtual-battery](https://github.com/victron-venus/dbus-virtual-battery) | Virtual battery for no-BMS chains |
-| [dbus-event-log](https://github.com/victron-venus/dbus-event-log) | Audit log of D-Bus commands & state transitions |
-| [dbus-service-template](https://github.com/4alvit/dbus-service-template) | Copier template for new D-Bus services (generation-test in CI) |
+| [dbus-event-log](https://github.com/victron-venus/dbus-event-log) | Optional audit log library/CLI; no validated native SetupHelper installer |
+| [dbus-service-template](https://github.com/4alvit/dbus-service-template) | Template renderer for new D-Bus services (generation-test in CI) |
 | [esphome-jbd-bms-mqtt](https://github.com/victron-venus/esphome-jbd-bms-mqtt) | ESP32 BLE proxy for JBD BMS → MQTT |
 | [esphome-ble-sensor-patterns](https://github.com/4alvit/esphome-ble-sensor-patterns) | Production-ready ESPHome BLE sensor configurations |
+
+**Thermostat control:** [inverter-climate](https://github.com/victron-venus/inverter-climate)
+runs on the GX or a Raspberry Pi with Venus OS. It reads local D-Bus energy data
+and uses the existing Home Assistant integration for Google Nest. Its optional
+temperature slider and Heat/Off selector appear in the **GUI v2 Switch pane**, also
+accessible through **VRM Remote Console**. Observation is the default; manual
+control and automatic preheating are enabled separately. Install through
+SetupHelper/PackageManager from the `latest` branch; see the
+[native installation guide](https://github.com/victron-venus/inverter-climate/blob/main/deploy/venus/README.md).
 
 ### Dashboards & UI
 
@@ -152,11 +87,11 @@ flowchart TB
 |------------|------|
 | [inverter-gateway](https://github.com/victron-venus/inverter-gateway) | Remote HTTPS/SSE API over Cerbo MQTT (tunnel edge) |
 | [terraform-cloudflare-inverter-gateway](https://github.com/victron-venus/terraform-cloudflare-inverter-gateway) | Cloudflare Zero Trust Access in front of inverter-gateway |
-| [fastapi-mqtt-gateway](https://github.com/victron-venus/fastapi-mqtt-gateway) | REST/WebSocket → MQTT bridge (auth, rate limiting, streaming) |
+| [fastapi-mqtt-gateway](https://github.com/4alvit/fastapi-mqtt-gateway) | REST/WebSocket → MQTT bridge (auth, rate limiting, streaming) |
 | [mqtt-observability-opentelemetry](https://github.com/4alvit/mqtt-observability-opentelemetry) | OpenTelemetry observability for MQTT IoT systems |
 | [venus-os-observability](https://github.com/victron-venus/venus-os-observability) | OTel/Prometheus for Venus OS — D-Bus tracing, metrics export (daemontools) |
 | [venus-os-ci-toolkit](https://github.com/victron-venus/venus-os-ci-toolkit) | Reusable GitHub Actions workflows (lint, test, coverage, Scorecard) — pinned to commit SHA |
-| [mcp-venus-os](https://github.com/victron-venus/mcp-venus-os) | MCP server for Venus OS D-Bus/MQTT management |
+| [mcp-venus-os](https://github.com/4alvit/mcp-venus-os) | Companion MCP server for Venus OS D-Bus/MQTT management |
 
 ### Data & AI
 
@@ -170,10 +105,17 @@ flowchart TB
 | Repository | Role |
 |------------|------|
 | [integration-tests](https://github.com/victron-venus/integration-tests) | MQTT / battery / PV integration test harness (reusable workflow) |
-| [terraform-github-victron](https://github.com/victron-venus/terraform-github-victron) | Terraform for org repos, branch rules, and policies |
-| [terraform-github-4alvit](https://github.com/4alvit/terraform-github-4alvit) | Terraform for 4alvit personal org |
+| [terraform-github-victron](https://github.com/4alvit/terraform-github-victron) | Terraform for org repos, branch rules, and policies |
+| [terraform-github-4alvit](https://github.com/4alvit/terraform-github-4alvit) | Terraform for the 4alvit personal account |
 | [iot-project-builder-profile](https://github.com/4alvit/iot-project-builder-profile) | Profile generator ([live Pages](https://4alvit.github.io/iot-project-builder-profile/)) — personal account |
-| [.github](https://github.com/victron-venus/.github) | Organization profile and shared docs (this repo) |
+| [SetupHelper](https://github.com/victron-venus/SetupHelper) | Venus OS package setup and configuration helpers |
+| [.github](https://github.com/victron-venus/.github) | Organization profile, project catalog and shared docs (this repo) |
+| [victron-venus.github.io](https://github.com/victron-venus/victron-venus.github.io) | Root-domain redirect to the organization website |
+
+### Archived projects
+
+- [dbus-evcharger](https://github.com/victron-venus/dbus-evcharger) is retained for rollback. The maintained Mercedes vehicle/charger path lives in [dbus-ev](https://github.com/victron-venus/dbus-ev); follow its [migration guide](https://github.com/victron-venus/dbus-ev/blob/main/docs/mercedes-migration.md) and never run two owners of the same charger service.
+- [venus-os-governance](https://github.com/victron-venus/venus-os-governance) is historical policy tooling. Current ESS checks belong to [inverter-control](https://github.com/victron-venus/inverter-control); the archived project is not an installed approval gate.
 
 ### Dashboard choice
 
@@ -188,12 +130,12 @@ flowchart TB
 
 ## Getting started
 
-Full stack install guide: **[docs/INSTALL.md](../docs/INSTALL.md)**
+Full stack install guide: **[docs/INSTALL.md](https://github.com/victron-venus/.github/blob/main/docs/INSTALL.md)**
 
 Quick Cerbo bootstrap (Venus packages only):
 
 ```bash
-git clone https://github.com/victron-venus/inverter-control.git  # or use bootstrap.sh from a local checkout
+git clone https://github.com/victron-venus/inverter-control.git
 # See inverter-control README for SetupHelper / PackageManager install
 ```
 
@@ -201,7 +143,7 @@ git clone https://github.com/victron-venus/inverter-control.git  # or use bootst
 
 - **Issues:** open in the relevant project repository
 - **Discussions:** enable at org level (Settings → General → Discussions) or per-repo via Terraform `has_discussions = true`
-- **Contributing:** [CONTRIBUTING.md](../CONTRIBUTING.md)
+- **Contributing:** [CONTRIBUTING.md](https://github.com/victron-venus/.github/blob/main/CONTRIBUTING.md)
 
 ## License
 
