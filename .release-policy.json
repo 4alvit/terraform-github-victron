@@ -2,11 +2,7 @@
   "repository": "4alvit/terraform-github-victron",
   "mode": "validation-only",
   "default_branch": "main",
-  "validation_workflows": [
-    "validate.yml",
-    "codeql.yml",
-    "trivy-fs.yml"
-  ],
+  "validation_workflows": ["validate.yml", "codeql.yml", "trivy-fs.yml", "dependency-review.yml"],
   "local_checks": [
     "bash scripts/ci.sh"
   ],
