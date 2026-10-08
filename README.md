@@ -252,3 +252,11 @@ For issues specific to:
 - **This Terrafor configuration**: Open an issue in this repository
 
 **Note:** This is a community project and is not affiliated with Victron Energy.
+
+## Contributions and public security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for bug reports, proposed changes and tests,
+[SECURITY.md](SECURITY.md) for private vulnerability reports, and
+[public security policy](docs/public-security.md) for review requirements,
+secret protection and rollout/state ownership. OpenSSF readiness is assessed
+for this infrastructure repository separately from the projects it manages.

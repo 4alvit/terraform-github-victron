@@ -208,8 +208,9 @@ locals {
 }
 
 module "repos" {
-  source   = "./modules/github_repo"
-  for_each = local.repositories
+  enable_public_security = contains(local.active_public_software_repositories, each.value.name)
+  source                 = "./modules/github_repo"
+  for_each               = local.repositories
 
   name                        = each.value.name
   description                 = each.value.description
@@ -369,18 +370,6 @@ resource "github_repository_ruleset" "default" {
   target      = "branch"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 5
-    actor_type  = "RepositoryRole"
-    bypass_mode = "always"
-  }
-
-  bypass_actors {
-    actor_id    = data.github_app.gitar.id
-    actor_type  = "Integration"
-    bypass_mode = "always"
-  }
-
   conditions {
     ref_name {
       include = ["~DEFAULT_BRANCH"]
@@ -400,10 +389,10 @@ resource "github_repository_ruleset" "default" {
 
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      dismiss_stale_reviews_on_push     = false
+      dismiss_stale_reviews_on_push     = true
       require_code_owner_review         = true
       require_last_push_approval        = true
-      required_approving_review_count   = 1
+      required_approving_review_count   = 2
       required_review_thread_resolution = true
     }
 
@@ -424,16 +413,22 @@ resource "github_repository_ruleset" "default_remaining" {
   target      = "branch"
   enforcement = "active"
 
-  bypass_actors {
-    actor_id    = 5
-    actor_type  = "RepositoryRole"
-    bypass_mode = "always"
+  dynamic "bypass_actors" {
+    for_each = contains(local.active_public_software_repositories, each.value) ? [] : [true]
+    content {
+      actor_id    = 5
+      actor_type  = "RepositoryRole"
+      bypass_mode = "always"
+    }
   }
 
-  bypass_actors {
-    actor_id    = data.github_app.gitar.id
-    actor_type  = "Integration"
-    bypass_mode = "always"
+  dynamic "bypass_actors" {
+    for_each = contains(local.active_public_software_repositories, each.value) ? [] : [true]
+    content {
+      actor_id    = data.github_app.gitar.id
+      actor_type  = "Integration"
+      bypass_mode = "always"
+    }
   }
 
   conditions {
@@ -455,10 +450,10 @@ resource "github_repository_ruleset" "default_remaining" {
 
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      dismiss_stale_reviews_on_push     = false
+      dismiss_stale_reviews_on_push     = contains(local.active_public_software_repositories, each.value)
       require_code_owner_review         = true
       require_last_push_approval        = true
-      required_approving_review_count   = 1
+      required_approving_review_count   = contains(local.active_public_software_repositories, each.value) ? 2 : 1
       required_review_thread_resolution = true
     }
 
