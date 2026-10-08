@@ -92,16 +92,16 @@ variable "dependabot_security_updates" {
   default     = false
 }
 
-# This module manages the public OSS projects described in files/github_org/profile/README.md.
-# Public visibility is the reviewed module default; other values remain explicit inputs.
-# Secret and vulnerability scanning remain required independently of repository visibility.
-# trivy:ignore:AVD-GIT-0001
 variable "enable_public_security" {
   description = "Enable free secret protection for explicitly audited public repositories."
   type        = bool
   default     = false
 }
 
+# This module manages the public OSS projects described in files/github_org/profile/README.md.
+# Public visibility is the reviewed module default; other values remain explicit inputs.
+# Secret and vulnerability scanning remain required independently of repository visibility.
+# trivy:ignore:AVD-GIT-0001
 resource "github_repository" "this" {
   dynamic "security_and_analysis" {
     for_each = var.enable_public_security && var.visibility == "public" ? [true] : []
