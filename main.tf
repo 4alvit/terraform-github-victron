@@ -28,7 +28,7 @@ locals {
   repositories = {
     inverter_control = {
       name                        = "inverter-control"
-      description                 = "Grid-zero feed-in control for Victron inverters with Home Assistant integration and web dashboard"
+      description                 = "Grid-zero feed-in control for Victron Venus OS with D-Bus, MQTT and optional Home Assistant integration"
       topics                      = ["battery", "cerbo-gx", "dbus", "emporia-vue", "energy", "energy-management", "ess", "external-control", "grid-tie", "hass", "home-assistant", "inverter", "meter", "mqtt", "power", "python", "quattro", "raspberry-pi", "sensor", "solar"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
@@ -370,60 +370,17 @@ resource "github_repository_ruleset" "default" {
   target      = "branch"
   enforcement = "active"
 
-  conditions {
-    ref_name {
-      include = ["~DEFAULT_BRANCH"]
-      exclude = []
-    }
-  }
-
-  rules {
-    deletion            = true
-    non_fast_forward    = true
-    required_signatures = true
-
-    copilot_code_review {
-      review_draft_pull_requests = true
-      review_on_push             = true
-    }
-
-    pull_request {
-      allowed_merge_methods             = ["merge", "squash", "rebase"]
-      dismiss_stale_reviews_on_push     = true
-      require_code_owner_review         = true
-      require_last_push_approval        = true
-      required_approving_review_count   = 1
-      required_review_thread_resolution = true
-    }
-
-    required_code_scanning {
-      required_code_scanning_tool {
-        alerts_threshold          = "errors"
-        security_alerts_threshold = "high_or_higher"
-        tool                      = "CodeQL"
-      }
-    }
-  }
-}
-
-resource "github_repository_ruleset" "default_remaining" {
-  for_each    = toset(local.remaining_repos)
-  name        = "Default"
-  repository  = each.value
-  target      = "branch"
-  enforcement = "active"
-
+  # Preserve the existing exceptions until their removal is explicitly enabled.
   dynamic "bypass_actors" {
-    for_each = contains(local.active_public_software_repositories, each.value) ? [] : [true]
+    for_each = contains(local.enforced_public_software_repositories, "inverter-desktop") ? [] : [true]
     content {
       actor_id    = 5
       actor_type  = "RepositoryRole"
       bypass_mode = "always"
     }
   }
-
   dynamic "bypass_actors" {
-    for_each = contains(local.active_public_software_repositories, each.value) ? [] : [true]
+    for_each = contains(local.enforced_public_software_repositories, "inverter-desktop") ? [] : [true]
     content {
       actor_id    = data.github_app.gitar.id
       actor_type  = "Integration"
@@ -450,7 +407,70 @@ resource "github_repository_ruleset" "default_remaining" {
 
     pull_request {
       allowed_merge_methods             = ["merge", "squash", "rebase"]
-      dismiss_stale_reviews_on_push     = contains(local.active_public_software_repositories, each.value)
+      dismiss_stale_reviews_on_push     = contains(local.enforced_public_software_repositories, "inverter-desktop")
+      require_code_owner_review         = true
+      require_last_push_approval        = true
+      required_approving_review_count   = 1
+      required_review_thread_resolution = true
+    }
+
+    required_code_scanning {
+      required_code_scanning_tool {
+        alerts_threshold          = "errors"
+        security_alerts_threshold = "high_or_higher"
+        tool                      = "CodeQL"
+      }
+    }
+  }
+}
+
+resource "github_repository_ruleset" "default_remaining" {
+  for_each    = toset(local.remaining_repos)
+  name        = "Default"
+  repository  = each.value
+  target      = "branch"
+  enforcement = "active"
+
+  dynamic "bypass_actors" {
+    for_each = each.value == "inverter-control" || contains(local.enforced_public_software_repositories, each.value) ? [] : [true]
+    content {
+      actor_id    = 5
+      actor_type  = "RepositoryRole"
+      bypass_mode = "always"
+    }
+  }
+
+  dynamic "bypass_actors" {
+    for_each = each.value == "inverter-control" || contains(local.enforced_public_software_repositories, each.value) ? [] : [true]
+    content {
+      actor_id    = data.github_app.gitar.id
+      actor_type  = "Integration"
+      bypass_mode = "always"
+    }
+  }
+
+  conditions {
+    ref_name {
+      include = ["~DEFAULT_BRANCH"]
+      exclude = []
+    }
+  }
+
+  rules {
+    deletion            = true
+    non_fast_forward    = true
+    required_signatures = true
+
+    copilot_code_review {
+      review_draft_pull_requests = true
+      review_on_push             = true
+    }
+
+    pull_request {
+      allowed_merge_methods = ["merge", "squash", "rebase"]
+      dismiss_stale_reviews_on_push = contains(local.active_public_software_repositories, each.value) && (
+        !contains(["SetupHelper", "venus-os-ci-toolkit"], each.value) || contains(local.enforced_public_software_repositories, each.value)
+      )
       require_code_owner_review         = true
       require_last_push_approval        = true
       required_approving_review_count   = 1

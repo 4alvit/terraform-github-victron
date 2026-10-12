@@ -2,11 +2,15 @@
 
 `public-security.tf` lists the public repositories reviewed for this rollout.
 Live metadata excludes private and archived repositories from new protections.
-Existing public review rules require one approving review, dismiss stale
-approvals and require resolution of review threads. Administrator and automation
-bypass actors are removed for this scope. Missing review rules are added without
-replacing existing status checks or immutable-tag rules. Existing release CI
-gates require success for administrators as well as other contributors.
+Existing public review rules require one approving review and resolution of
+review threads. Existing bypasses and stale-review settings are preserved by
+default. Additional enforcement requires an explicit repository entry in
+`public_security_enforcement_repositories`: it removes administrator/automation
+bypasses, dismisses stale approvals and creates missing review rules without
+replacing status checks or immutable-tag rules. Private and archived repositories
+remain excluded even when listed. `inverter-control` already has no bypass and
+keeps that protection without an opt-in. SetupHelper's current settings are
+preserved; adding a repository to the inventory does not enable enforcement.
 
 Secret scanning and push protection are enabled on the audited public repository
 resources managed by this state. Private vulnerability reporting was enabled
