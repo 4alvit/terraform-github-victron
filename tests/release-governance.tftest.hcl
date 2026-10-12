@@ -211,10 +211,25 @@ run "token_defaults_preserve_actions_approval" {
   }
 }
 
-run "audited_public_ci_has_no_bypass" {
+run "audited_public_ci_preserves_existing_policy_by_default" {
   command = plan
   variables {
-    release_gate_repositories = [".github"]
+    release_gate_repositories = [".github", "inverter-control"]
+  }
+  assert {
+    condition = (
+      length(github_repository_ruleset.release_quality_gate[".github"].bypass_actors) == 1 &&
+      length(github_repository_ruleset.release_quality_gate["inverter-control"].bypass_actors) == 0
+    )
+    error_message = "Inventory membership must preserve existing bypasses without adding a bypass where none exists."
+  }
+}
+
+run "explicitly_enforced_public_ci_has_no_bypass" {
+  command = plan
+  variables {
+    release_gate_repositories                = [".github"]
+    public_security_enforcement_repositories = [".github"]
   }
   assert {
     condition     = length(github_repository_ruleset.release_quality_gate[".github"].bypass_actors) == 0
