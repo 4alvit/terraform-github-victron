@@ -392,7 +392,7 @@ resource "github_repository_ruleset" "default" {
       dismiss_stale_reviews_on_push     = true
       require_code_owner_review         = true
       require_last_push_approval        = true
-      required_approving_review_count   = 2
+      required_approving_review_count   = 1
       required_review_thread_resolution = true
     }
 
@@ -453,7 +453,7 @@ resource "github_repository_ruleset" "default_remaining" {
       dismiss_stale_reviews_on_push     = contains(local.active_public_software_repositories, each.value)
       require_code_owner_review         = true
       require_last_push_approval        = true
-      required_approving_review_count   = contains(local.active_public_software_repositories, each.value) ? 2 : 1
+      required_approving_review_count   = 1
       required_review_thread_resolution = true
     }
 
