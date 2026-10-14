@@ -1,71 +1,38 @@
 #!/bin/bash
-#
-# Setup Terraform Cloud for victron-venus GitHub infrastructure
-#
+# Print the HCP Terraform connection checklist without changing backend or state.
 
-set -e
+set -euo pipefail
 
-echo "=============================================="
-echo "  Terraform Cloud Setup"
-echo "=============================================="
-echo ""
+cat <<'GUIDE'
+HCP Terraform connection checklist
 
-# Check if terraform is installed
-if ! command -v terraform &> /dev/null; then
-    echo "Error: terraform is not installed"
-    echo "Install: brew install terraform"
-    exit 1
-fi
+Canonical organization: alvit-infrastructure
+Canonical workspace: github-infrastructure
+GitHub owner managed by this configuration: victron-venus (unchanged)
 
-echo "Step 1: Create Terraform Cloud account"
-echo "  → Open: https://app.terraform.io/signup/account"
-echo ""
-read -p "Press Enter when you have created an account..."
+The state copy and full destination plan were verified on 2026-10-14.
+See STATE_MIGRATION.md for the source history and existing unrelated drift.
+This helper only prints instructions; it does not change backend or state.
 
-echo ""
-echo "Step 2: Create organization 'victron-venus'"
-echo "  → Open: https://app.terraform.io/app/organizations/new"
-echo "  → Organization name: victron-venus"
-echo ""
-read -p "Press Enter when organization is created..."
+Before connecting:
+  1. Confirm access to alvit-infrastructure. Verify the effective identity via
+     /account/details and organization permissions, not a particular username.
+  2. Use the existing workspace; do not create an empty replacement.
+  3. Confirm the destination contains the expected state and workspace inputs:
+       github_token, billing_email, existing_webhook_url, existing_webhook_secret
+     Preserve all other variables, variable sets and execution settings as well.
+  4. Load an authorized destination token from a private credential store through
+     TF_TOKEN_app_terraform_io for the command or current operator session.
+     Where already configured for that account, ~/.local/bin/terraform-4alvit
+     can select the destination account for the init and plan commands instead.
+     Keep default saved CLI credentials intact; never paste tokens into chat,
+     logs or source files. Initialize a clean checkout with terraform init.
+  5. Inspect terraform plan before any apply. Treat existing drift separately.
 
-echo ""
-echo "Step 3: Login to Terraform Cloud"
-terraform login
+Canonical workspace:
+  https://app.terraform.io/app/alvit-infrastructure/workspaces/github-infrastructure
+Workspace variables:
+  https://app.terraform.io/app/alvit-infrastructure/workspaces/github-infrastructure/variables
 
-echo ""
-echo "Step 4: Initialize Terraform (creates workspace automatically)"
-terraform init
-
-echo ""
-echo "Step 5: Configure variables in Terraform Cloud"
-echo "  → Open: https://app.terraform.io/app/victron-venus/workspaces/github-infrastructure/variables"
-echo ""
-echo "  Add these variables:"
-echo "    - github_token (sensitive) = your GitHub PAT"
-echo "    - billing_email (sensitive) = your email"
-echo ""
-read -p "Press Enter when variables are configured..."
-
-echo ""
-echo "Step 6: Import existing resources"
-./import.sh
-
-echo ""
-echo "Step 7: Verify configuration"
-terraform plan
-
-echo ""
-echo "=============================================="
-echo "  Setup Complete!"
-echo "=============================================="
-echo ""
-echo "Your Terraform state is now stored securely in Terraform Cloud."
-echo ""
-echo "Workspace URL:"
-echo "  https://app.terraform.io/app/victron-venus/workspaces/github-infrastructure"
-echo ""
-echo "Commands:"
-echo "  terraform plan   - Preview changes"
-echo "  terraform apply  - Apply changes"
-echo "  terraform show   - View current state"
+Do not re-import existing infrastructure or resume the previous workspace.
+GUIDE

@@ -41,32 +41,50 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ### Option A: Terraform Cloud (Recommended)
 
-State is stored securely in Terraform Cloud (free tier: 500 resources).
+The canonical backend is HCP Terraform organization `alvit-infrastructure`,
+workspace `github-infrastructure`. It manages GitHub organization
+`victron-venus`; changing the HCP organization does not change the GitHub owner.
+The state copy and full destination plan were verified on 2026-10-14; see the
+[migration record](STATE_MIGRATION.md#hcp-organization-transfer-2026-10-14).
 
 ```bash
 cd terraform-github-victron
 
-# Interactive setup
+# Print the connection checklist (no backend changes)
 ./setup-cloud.sh
 ```
 
-Or manually:
+Connect to the existing workspace:
 
-1. Create account: https://app.terraform.io/signup/account
-2. Create organization: `victron-venus`
-3. Login: `terraform login`
-4. Initialize: `terraform init` (creates workspace automatically)
-5. Add variables in Terraform Cloud UI:
-   - `github_token` (sensitive)
-   - `billing_email` (sensitive)
-6. Import: `./import.sh`
-7. Apply: `terraform apply`
+1. Confirm access to the existing
+   [canonical workspace](https://app.terraform.io/app/alvit-infrastructure/workspaces/github-infrastructure)
+   and confirm its state, variables and execution settings are available.
+2. Use an authorized destination token from a private credential store through
+   `TF_TOKEN_app_terraform_io`, scoped to the command or current operator session.
+   On an operator machine with the existing `~/.local/bin/terraform-4alvit`
+   wrapper configured for the destination account, use that wrapper for the
+   `init` and `plan` commands below instead of bare `terraform`.
+   Verify the effective HCP identity with the `/account/details` API and its
+   access to the destination organization; the HCP username may have changed
+   and does not need to match the GitHub owner. Do not overwrite the default
+   saved CLI credentials or paste tokens into chat, logs or this repository.
+3. Initialize a clean checkout: `terraform init`. Initialization is not the state
+   migration procedure and must not create an empty replacement workspace.
+4. Confirm the existing sensitive inputs are available: `github_token`,
+   `billing_email`, `existing_webhook_url` and `existing_webhook_secret`, together
+   with all other workspace and variable-set inputs.
+5. Run `terraform plan` and inspect the real state-aware result before any
+   apply. Do not re-import existing infrastructure or resume management from
+   the previous workspace. Existing drift is recorded in the migration notes.
 
 ### Option B: Running locally (disconnect from Terraform Cloud)
 
 Use this when you want `terraform plan` / `apply` on your machine **without** HCP Terraform remote execution or remote state.
 
-This repo’s `cloud {}` block in `main.tf` targets organization `victron-venus`, workspace `github-infrastructure`.
+This repo’s `cloud {}` block in `main.tf` targets organization
+`alvit-infrastructure`, workspace `github-infrastructure`. Coordinate any move
+to local state with this canonical workspace so that only one state manages
+the existing GitHub resources.
 
 #### Temporary detach (recommended for experiments)
 

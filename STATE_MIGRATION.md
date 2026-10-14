@@ -1,5 +1,53 @@
 # State Migration Guide
 
+## HCP organization transfer (2026-10-14)
+
+The canonical backend is now `alvit-infrastructure/github-infrastructure`.
+The state copy and full destination plan were verified before adopting this
+backend configuration. GitHub ownership remains `victron-venus`.
+
+- Previous workspace: `victron-venus/github-infrastructure`,
+  `ws-qUGm76z3WGdsLsTn`, state `sv-jqQ4dXqkhYwRrb92`.
+- Canonical workspace: `alvit-infrastructure/github-infrastructure`,
+  `ws-4QbDi4nRwJGphqvb`, state `sv-2zCA58eZEfSQdN2N`.
+- The copy preserved identical raw state, lineage and serial `160`, with
+  **221 billable managed resources and 272 state entries**. All four workspace
+  inputs and execution settings were copied; CLI state listing matched all
+  272 addresses. Resource addresses and GitHub IDs did not change.
+- The full destination plan, `run-WAr4gnZjpsyzfCNV`
+  (`plan-33cqeeoxhHPUrcgj`, configuration `cv-6CDX4dAYQDhgowfv`), matched the
+  source baseline `run-RSYji9r3YcfrVXD3` across all compared plan fields.
+  Its only proposed resource update was the pre-existing
+  `inverter-desktop.homepage_url` drift. No infrastructure apply was performed
+  as part of this backend verification; that drift remains a separate change.
+
+The previous workspace was locked during cutover. Retiring its HCP tracking is
+a separate cutover operation and must not destroy any GitHub resources.
+Do not resume management from the previous workspace or run
+both workspaces against the same resources. All other workspaces, including
+Portainer, are outside this transfer.
+
+Source history was archived privately outside the repository: **160 state
+versions and 216 runs**, with verified SHA256 checksums for every archived
+file. The archive includes the completed source baseline run. It contains
+secrets and must not be committed; retain it for recovery and audit.
+
+Use an authorized destination token from a private credential store through
+`TF_TOKEN_app_terraform_io`, scoped to the command or operator session. Where
+already configured, `~/.local/bin/terraform-4alvit` selects that account for
+Terraform commands. Verify `/account/details` and organization access instead
+of requiring a particular username; keep default saved CLI credentials intact.
+Never place tokens or state contents in chat, logs or source control.
+
+For recovery, reconcile the latest authoritative state before changing the
+backend. Never resume an old source snapshot after the destination has changed
+infrastructure. Restore from the private archive only after that reconciliation;
+do not re-import the existing resources.
+
+The sections below record earlier operations at the previous workspace. Their
+old HCP organization references are historical, not instructions to repeat
+those state changes during this transfer.
+
 ## HCP resource cleanup (2026-10-14)
 
 The cleanup removes ten managed resources from `victron-venus/github-infrastructure`:
