@@ -5,7 +5,7 @@ variables {
 
 mock_provider "github" {}
 
-run "adopt_existing_repository_and_review_policy" {
+run "adopt_existing_repository_policy" {
   command = plan
 
   assert {
@@ -19,21 +19,6 @@ run "adopt_existing_repository_and_review_policy" {
     error_message = "Adoption must retain the archived repository and existing website merge settings."
   }
 
-  assert {
-    condition = length(github_repository_ruleset.disabled_copilot) == 5 && alltrue([
-      for rule in github_repository_ruleset.disabled_copilot :
-      rule.target == "branch" && rule.enforcement == "disabled" && length(rule.bypass_actors) == 0
-    ])
-    error_message = "Existing optional Copilot rules must remain disabled."
-  }
-
-  assert {
-    condition = length(github_repository_collaborator.existing_admin) == 5 && alltrue([
-      for grant in github_repository_collaborator.existing_admin :
-      grant.username == "4alvit" && grant.permission == "admin"
-    ])
-    error_message = "Adoption must preserve the five existing administrator grants."
-  }
 }
 
 run "adopt_existing_pages_policy" {

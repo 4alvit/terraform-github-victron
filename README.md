@@ -148,14 +148,19 @@ retain their existing settings. Immutable version tags remain protected.
 ## Adopted infrastructure
 
 `adopted-infrastructure.tf` and `adopted-imports.tf` record the existing archived
-`venus-os-governance` repository, the root redirect repository, five disabled
-Copilot rulesets, two GitHub Pages sites and environments, their four deployment
-branch policies, five existing administrator grants, and the active monitoring
+`venus-os-governance` repository, the root redirect repository, two GitHub Pages
+sites and environments, their four deployment branch policies, and the active monitoring
 webhook. The archived default
 branch ruleset is managed with the other default rulesets. These imports retain
 the live configuration, including the website default branch `feature/redirect`
-and Pages source `main`; they do not activate disabled rules or unarchive code.
+and Pages source `main`; they do not unarchive code.
 The topic lists in `main.tf` also preserve the values observed on GitHub.
+
+The five disabled standalone Copilot rulesets were retired to reduce the HCP
+managed-resource count. Active review, CI and release rules remain managed.
+The five explicit grants to organization owner `4alvit` are no longer managed:
+a `removed` block with `destroy = false` preserves the existing grants while
+removing their state bindings. See [the cleanup migration](STATE_MIGRATION.md#hcp-resource-cleanup-2026-10-14).
 
 The GitHub provider omits merge settings when reading archived repositories and
 skips API updates while they remain archived. The initial governance import
@@ -173,9 +178,8 @@ Two inactive retired control/dashboard webhooks and write-only Actions secrets
 remain externally managed and untouched. The archived `dbus-evcharger` repository
 and its settings are also externally managed after consolidation into `dbus-ev`;
 see [the retirement migration](STATE_MIGRATION.md#retired-dbus-evcharger-2026-09-22).
-The inventory covers 26 repository settings, 70 rulesets, 18 environments and
-their 20 branch policies, both Pages sites, the five explicit administrator grants
-and the active webhook.
+The inventory covers repository settings, active rulesets, environments and
+their branch policies, both Pages sites, and the active webhook.
 There are no additional deploy keys, teams or organization webhooks to import.
 No new lifecycle ignore rules hide differences.
 
