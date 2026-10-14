@@ -1,10 +1,9 @@
 terraform {
   required_version = ">= 1.15.7"
 
-  # Remote state storage in Terraform Cloud (free tier)
-  # Comment out this block for local state during initial setup
+  # Canonical HCP backend; GitHub resource ownership remains victron-venus.
   cloud {
-    organization = "victron-venus"
+    organization = "alvit-infrastructure"
 
     workspaces {
       name = "github-infrastructure"
