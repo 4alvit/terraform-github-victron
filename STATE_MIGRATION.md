@@ -1,5 +1,32 @@
 # State Migration Guide
 
+## HCP resource cleanup (2026-10-14)
+
+The cleanup removes ten managed resources from `victron-venus/github-infrastructure`:
+
+- Delete only the five `github_repository_ruleset.disabled_copilot` instances
+  for `dbus-tasmota-pv`, `inverter-control`, `inverter-dashboard`,
+  `inverter-desktop`, and `inverter-monitoring`. Their live enforcement was
+  verified as `disabled`; active rulesets are unchanged.
+- Forget the five `github_repository_collaborator.existing_admin` bindings
+  for `dbus-event-log`, `dbus-mqtt-battery`, `dbus-tasmota-pv`,
+  `esphome-jbd-bms-mqtt`, and `inverter-control`. The `removed` block explicitly
+  sets `destroy = false`, so Terraform must not revoke any grant. The account
+  `4alvit` remains an organization owner.
+
+The corresponding import blocks are removed to prevent re-adoption. Preserve a
+private state backup and review the saved plan before applying: exactly five
+rule deletions and five forget actions, with no other infrastructure changes.
+If a full plan contains unrelated drift, reconcile or scope the cleanup before
+applying; do not include unrelated updates in this migration. Afterwards verify
+that all ten addresses are absent, the five disabled rules are gone, owner
+access and active rules remain intact, and a cleanup plan is empty.
+
+All Portainer workspaces and stacks, the archived `venus-os-governance` project,
+and existing GitHub Pages and webhook settings remain managed as before.
+The empty `victron-venus/ottplay-swop` workspace is a separate HCP cleanup;
+the active project backend in organization `open-ott-play` is unrelated.
+
 ## Retired `dbus-evcharger` (2026-09-22)
 
 The charger service has moved into `dbus-ev`. The archived `dbus-evcharger`

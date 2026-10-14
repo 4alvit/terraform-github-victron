@@ -1,5 +1,5 @@
 # Existing manually created infrastructure, adopted without changing its policy.
-# Keep disabled reviews and archived repository settings as observed.
+# Keep archived repository settings as observed.
 
 # This archived OSS project remains public by design; adoption preserves its visibility.
 # trivy:ignore:AVD-GIT-0001
@@ -53,16 +53,6 @@ resource "github_repository" "website" {
 }
 
 locals {
-  existing_admin_repositories = toset([
-    "dbus-mqtt-battery", "dbus-tasmota-pv", "esphome-jbd-bms-mqtt", "inverter-control", "dbus-event-log",
-  ])
-  disabled_copilot_rulesets = {
-    "dbus-tasmota-pv"     = "19344961"
-    "inverter-control"    = "19446927"
-    "inverter-dashboard"  = "19483917"
-    "inverter-monitoring" = "19506308"
-    "inverter-desktop"    = "19459711"
-  }
   pages_repositories = toset([".github", "victron-venus.github.io"])
   pages_branch_policies = {
     ".github:gh-pages" = {
@@ -84,27 +74,6 @@ locals {
       repository = "victron-venus.github.io"
       branch     = "main"
       id         = "58030351"
-    }
-  }
-}
-
-resource "github_repository_ruleset" "disabled_copilot" {
-  for_each    = local.disabled_copilot_rulesets
-  name        = "Code Quality Copilot review for default branch"
-  repository  = each.key
-  target      = "branch"
-  enforcement = "disabled"
-
-  conditions {
-    ref_name {
-      include = ["~DEFAULT_BRANCH"]
-      exclude = []
-    }
-  }
-  rules {
-    copilot_code_review {
-      review_on_push             = true
-      review_draft_pull_requests = true
     }
   }
 }
@@ -141,12 +110,14 @@ resource "github_repository_environment_deployment_policy" "github_pages" {
 }
 
 
-# Existing explicit grants to the organization owner, without inviting new users.
-resource "github_repository_collaborator" "existing_admin" {
-  for_each   = local.existing_admin_repositories
-  repository = each.key
-  username   = "4alvit"
-  permission = "admin"
+# The organization owner already has administrator access to every repository.
+# Retire these redundant state bindings without revoking the existing grants.
+removed {
+  from = github_repository_collaborator.existing_admin
+
+  lifecycle {
+    destroy = false
+  }
 }
 
 # Sensitive values are supplied by the canonical HCP workspace after verifying
