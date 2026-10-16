@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub last commit](https://img.shields.io/github/last-commit/4alvit/terraform-github-victron)](https://github.com/4alvit/terraform-github-victron/commits/main)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/4alvit/terraform-github-victron/graphs/commit-activity)
-[![Terraform](https://img.shields.io/badge/Terraform-1.0+-blue.svg)](https://www.terraform.io/)
+[![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.15.7-blue.svg)](https://www.terraform.io/)
 
 This Terraform configuration manages the entire GitHub infrastructure for the victron-venus organization.
 
@@ -30,7 +30,7 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ## Prerequisites
 
-1. **Terraform** >= 1.0
+1. **Terraform** >= 1.15.7 for the existing HCP configuration (CI checks 1.16.6), or the verified OpenTofu 1.13.1 [independent local deployment profile](docs/SECURE_PROVIDER.md#complete-local-deployment-profile).
 2. **GitHub Personal Access Token** with scopes:
    - `admin:org` (organization settings)
    - `repo` (full repository access)
@@ -39,7 +39,9 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
 
 ## Usage
 
-### Option A: Terraform Cloud (Recommended)
+For new independent deployments, use the [complete secure-provider profile](docs/SECURE_PROVIDER.md#complete-local-deployment-profile). It verifies the OpenTofu engine and disclosed provider derivative and prevents fallback to the older official binary. The existing HCP workspace below retains that older provider and has not been migrated or qualified by the local-profile work.
+
+### Option A: Existing HCP Terraform deployment
 
 The canonical backend is HCP Terraform organization `alvit-infrastructure`,
 workspace `github-infrastructure`. It manages GitHub organization
@@ -77,52 +79,13 @@ Connect to the existing workspace:
    apply. Do not re-import existing infrastructure or resume management from
    the previous workspace. Existing drift is recorded in the migration notes.
 
-### Option B: Running locally (disconnect from Terraform Cloud)
+### Option B: New independent local deployment
 
-Use this when you want `terraform plan` / `apply` on your machine **without** HCP Terraform remote execution or remote state.
+Follow the [complete local deployment instructions](docs/SECURE_PROVIDER.md#complete-local-deployment-profile) using a new private workspace, a separate owned target inventory and the verified wrapper for every init, plan and apply command. Those instructions include the OpenTofu compatibility changes and private variable inputs. The disposable [schema validator](docs/SECURE_PROVIDER.md#validate-without-touching-production-state) can check compatibility without contacting or changing existing resources.
 
-This repo’s `cloud {}` block in `main.tf` targets organization
-`alvit-infrastructure`, workspace `github-infrastructure`. Coordinate any move
-to local state with this canonical workspace so that only one state manages
-the existing GitHub resources.
+Do not detach the existing HCP checkout and apply an empty local state against its resources. Moving an established deployment requires a separately reviewed state migration: preserve a private backup, coordinate an exclusive writer, verify resource addresses and credentials, and review the complete state-aware plan before any apply. A state download or deletion of backend cache alone does not establish a safe migration. The existing migration history is in [STATE_MIGRATION.md](STATE_MIGRATION.md).
 
-#### Temporary detach (recommended for experiments)
-
-1. Comment out the entire `cloud { ... }` block in `main.tf`.
-2. Clear the local backend cache from the repo root:
-   ```bash
-   rm -rf .terraform
-   ```
-3. Re-init (local state by default):
-   ```bash
-   terraform init
-   ```
-4. Provide variables locally — TFC workspace variables are **not** used when detached:
-   ```bash
-   cp terraform.tfvars.example terraform.tfvars
-   # Edit terraform.tfvars with your values (gitignored)
-   # or: export TF_VAR_github_token=... TF_VAR_billing_email=...
-   terraform plan
-   terraform apply
-   ```
-
-#### Keep existing remote state locally (optional)
-
-While still attached to TFC:
-
-```bash
-terraform state pull > terraform.tfstate
-```
-
-Then comment out `cloud {}` in `main.tf`, `rm -rf .terraform`, `terraform init`, and confirm with `terraform state list`. Keep `terraform.tfstate` **gitignored** — never commit it.
-
-#### Warnings
-
-- Do not apply from both TFC and local against the same resources without coordinating state (drift / conflicts).
-- To re-enable TFC: uncomment `cloud {}`, remove local `.terraform` (and local state if migrating back), then `terraform init`. Only `state push` / migrate if you know what you are doing.
-- Never commit credentials, `terraform.tfvars` with secrets, or state files.
-
-Requires Terraform ≥ 1.5 (HCP Terraform `cloud {}` block; not the old `backend "remote"` syntax).
+Never commit credentials, private variable files, plan files or state files.
 
 ## Import Existing Resources
 
