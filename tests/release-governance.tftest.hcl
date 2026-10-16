@@ -1,6 +1,6 @@
 variables {
   existing_webhook_url    = "https://example.invalid/webhook"
-  existing_webhook_secret = "test-fixture-not-a-live-secret"
+  existing_webhook_secret = "test-fixture-not-a-live-secret-32-bytes"
 }
 
 # Every run is a plan against a mocked provider in a disposable standalone copy.
