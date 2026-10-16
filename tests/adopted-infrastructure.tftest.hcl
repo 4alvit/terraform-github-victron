@@ -1,6 +1,6 @@
 variables {
   existing_webhook_url    = "https://example.invalid/webhook"
-  existing_webhook_secret = "test-fixture-not-a-live-secret"
+  existing_webhook_secret = "test-fixture-not-a-live-secret-32-bytes"
 }
 
 mock_provider "github" {}
@@ -75,5 +75,17 @@ run "masked_webhook_secret_is_rejected" {
   variables {
     existing_webhook_secret = "********"
   }
+  expect_failures = [var.existing_webhook_secret]
+}
+
+run "reject_short_webhook_secret" {
+  command = plan
+  variables { existing_webhook_secret = "short-test-secret" }
+  expect_failures = [var.existing_webhook_secret]
+}
+
+run "reject_long_api_mask" {
+  command = plan
+  variables { existing_webhook_secret = "********************************" }
   expect_failures = [var.existing_webhook_secret]
 }

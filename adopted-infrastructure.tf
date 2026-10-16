@@ -139,8 +139,8 @@ variable "existing_webhook_secret" {
   sensitive   = true
   nullable    = false
   validation {
-    condition     = trimspace(var.existing_webhook_secret) != "" && var.existing_webhook_secret != "********"
-    error_message = "Supply the original receiver secret through a sensitive HCP variable, never GitHub's masked response."
+    condition     = length(trimspace(var.existing_webhook_secret)) >= 32 && !can(regex("^\\*+$", var.existing_webhook_secret))
+    error_message = "Supply the original receiver secret of at least 32 characters through a sensitive HCP variable; never use an API mask."
   }
 }
 
