@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.2.0] - 2026-10-17
 
 ### Security
 
@@ -9,8 +9,16 @@
 
 ### Changed
 
+- Require one approving review and preserve live GitHub policy during reconciliation.
+- Document the reviewed backend-workspace migration and retirement of redundant state entries; source publication performs neither operation.
+- Align operator guidance with the qualified independent local deployment profile.
+
 - Document the verified strict Terraform/provider TLS profile and source-release scope.
 - Add governance, conduct and a one-year roadmap without changing live infrastructure.
+
+### Upgrade
+
+This is a source-only release with governance and state-management changes, not an applied infrastructure plan. Review the changes from 0.1.0 before using the configuration. Preserve the existing state and workspace bindings; import or forget only the explicitly reviewed resource identities, and inspect a fresh state-aware plan before any apply. Never apply this source against an empty replacement state. Where documented, run the review-policy reconciliation command after Terraform to preserve the additional Copilot setting. The independently patched provider profile is opt-in and does not replace the official HCP provider automatically. Keep the prior source tag and a protected state backup for rollback.
 
 ## [0.1.0] - 2026-10-08
 
