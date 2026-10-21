@@ -102,6 +102,16 @@ locals {
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
+    esphome_emporia_vue2_ethernet = {
+      name                        = "esphome-emporia-vue2-ethernet"
+      description                 = "Emporia Vue 2 Ethernet retrofit with ESPHome, W5500, Home Assistant and Victron Venus OS integration"
+      topics                      = ["cerbo-gx", "dbus", "documentation", "emporia-vue", "energy-monitoring", "esp32", "esphome", "ethernet", "hardware", "home-assistant", "venus-os", "victron", "w5500"]
+      has_projects                = false
+      has_wiki                    = false
+      enable_public_security      = true
+      vulnerability_alerts        = true
+      dependabot_security_updates = true
+    }
     esphome_jbd_bms_mqtt = {
       name                        = "esphome-jbd-bms-mqtt"
       description                 = "ESPHome ESP32 Bluetooth proxy for JBD BMS batteries, publishing to MQTT for Victron Venus OS"
@@ -207,7 +217,7 @@ locals {
 }
 
 module "repos" {
-  enable_public_security = contains(local.active_public_software_repositories, each.value.name)
+  enable_public_security = lookup(each.value, "enable_public_security", contains(local.active_public_software_repositories, each.value.name))
   source                 = "./modules/github_repo"
   for_each               = local.repositories
 
