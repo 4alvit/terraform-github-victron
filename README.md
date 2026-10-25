@@ -46,7 +46,9 @@ For new independent deployments, use the [complete secure-provider profile](docs
 The canonical backend is HCP Terraform organization `alvit-infrastructure`,
 workspace `github-infrastructure`. It manages GitHub organization
 `victron-venus`; changing the HCP organization does not change the GitHub owner.
-The state copy and full destination plan were verified on 2026-10-14; see the
+The transfer completed on 2026-10-14. After verifying the state copy and full
+destination plan, the previous workspace was deleted without destroying GitHub
+resources; see the
 [migration record](STATE_MIGRATION.md#hcp-organization-transfer-2026-10-14).
 
 ```bash
