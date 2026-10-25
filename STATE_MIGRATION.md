@@ -25,6 +25,12 @@ new operation.
   `inverter-desktop.homepage_url` drift. No infrastructure apply was performed
   as part of this backend verification; that drift was left for a separate change.
 
+The 2026-10-24 follow-up configuration explicitly preserves the existing
+`inverter-desktop` homepage, `https://github.com/victron-venus/inverter-desktop/tree/main/docs`,
+instead of proposing to clear it. This changes configuration only; no
+infrastructure apply was performed. Verify the current full plan before any
+future apply.
+
 The previous workspace was locked during cutover and deleted after the state,
 variables, destination plan and archived source history were verified. This
 retired its HCP tracking without destroying any GitHub resources. The final

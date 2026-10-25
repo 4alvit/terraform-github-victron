@@ -91,25 +91,15 @@ Never commit credentials, private variable files, plan files or state files.
 
 ## Import Existing Resources
 
-If you already have the infrastructure created manually, import it:
+The canonical workspace already tracks the existing resources. Do not re-import
+them. Current adoption records are in [adopted-imports.tf](adopted-imports.tf);
+[STATE_MIGRATION.md](STATE_MIGRATION.md) records completed state migrations.
 
-```bash
-# Import organization settings
-terraform import github_organization_settings.victron_venus victron-venus
-
-# Import repositories
-terraform import github_repository.inverter_control inverter-control
-terraform import github_repository.inverter_dashboard inverter-dashboard
-terraform import github_repository.dbus_mqtt_battery dbus-mqtt-battery
-terraform import github_repository.dbus_tasmota_pv dbus-tasmota-pv
-terraform import github_repository.esphome_jbd_bms_mqtt esphome-jbd-bms-mqtt
-
-# Import branch protection
-terraform import github_branch_protection.inverter_control_main inverter-control:main
-terraform import github_branch_protection.inverter_dashboard_main inverter-dashboard:main
-terraform import github_branch_protection.dbus_mqtt_battery_main dbus-mqtt-battery:main
-terraform import github_branch_protection.dbus_tasmota_pv_main dbus-tasmota-pv:main
-```
+For a new independent deployment that adopts resources you own, use the actual
+module and resource addresses in that deployment's current configuration.
+Review the import IDs against its existing state and inspect a full state-aware
+plan before applying. Historical flat resource addresses and migration commands
+are not an import checklist for the canonical workspace.
 
 ## Completed Features
 

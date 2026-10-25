@@ -8,6 +8,12 @@ variable "description" {
   type        = string
 }
 
+variable "homepage_url" {
+  description = "Repository homepage URL"
+  type        = string
+  default     = null
+}
+
 variable "visibility" {
   description = "Repository visibility"
   type        = string
@@ -115,9 +121,10 @@ resource "github_repository" "this" {
     }
   }
 
-  name        = var.name
-  description = var.description
-  visibility  = var.visibility
+  name         = var.name
+  description  = var.description
+  homepage_url = var.homepage_url
+  visibility   = var.visibility
 
   has_issues      = var.has_issues
   has_projects    = var.has_projects
