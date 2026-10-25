@@ -3,13 +3,17 @@
 ## HCP organization transfer (2026-10-14)
 
 The canonical backend is now `alvit-infrastructure/github-infrastructure`.
-The state copy and full destination plan were verified before adopting this
-backend configuration. GitHub ownership remains `victron-venus`.
+The transfer completed on 2026-10-14, with the backend configuration merged in
+[PR #68](https://github.com/4alvit/terraform-github-victron/pull/68).
+The state copy and full destination plan were verified before cutover.
+GitHub ownership remains `victron-venus`. The state IDs, serials and resource
+counts below describe that cutover; inspect the current workspace before any
+new operation.
 
 - Previous workspace: `victron-venus/github-infrastructure`,
   `ws-qUGm76z3WGdsLsTn`, state `sv-jqQ4dXqkhYwRrb92`.
 - Canonical workspace: `alvit-infrastructure/github-infrastructure`,
-  `ws-4QbDi4nRwJGphqvb`, state `sv-2zCA58eZEfSQdN2N`.
+  `ws-4QbDi4nRwJGphqvb`, with state `sv-2zCA58eZEfSQdN2N` at cutover.
 - The copy preserved identical raw state, lineage and serial `160`, with
   **221 billable managed resources and 272 state entries**. All four workspace
   inputs and execution settings were copied; CLI state listing matched all
@@ -19,13 +23,25 @@ backend configuration. GitHub ownership remains `victron-venus`.
   source baseline `run-RSYji9r3YcfrVXD3` across all compared plan fields.
   Its only proposed resource update was the pre-existing
   `inverter-desktop.homepage_url` drift. No infrastructure apply was performed
-  as part of this backend verification; that drift remains a separate change.
+  as part of this backend verification; that drift was left for a separate change.
 
-The previous workspace was locked during cutover. Retiring its HCP tracking is
-a separate cutover operation and must not destroy any GitHub resources.
-Do not resume management from the previous workspace or run
-both workspaces against the same resources. All other workspaces, including
-Portainer, are outside this transfer.
+The 2026-10-24 follow-up configuration explicitly preserves the existing
+`inverter-desktop` homepage, `https://github.com/victron-venus/inverter-desktop/tree/main/docs`,
+instead of proposing to clear it. This changes configuration only; no
+infrastructure apply was performed. Verify the current full plan before any
+future apply.
+
+The previous workspace was locked during cutover and deleted after the state,
+variables, destination plan and archived source history were verified. This
+retired its HCP tracking without destroying any GitHub resources. The final
+2026-10-14 audit confirmed that the old workspace was absent and the destination
+retained the copied state. The transfer freed **221 billable managed resources**
+in HCP organization `victron-venus`, reducing its count from **494 to 273** at
+that time. All other workspaces, including the **19 Portainer workspaces and
+their states**, were unchanged by the transfer.
+
+Use only the existing canonical workspace. Do not recreate the previous
+workspace or manage the same resources from a second state.
 
 Source history was archived privately outside the repository: **160 state
 versions and 216 runs**, with verified SHA256 checksums for every archived

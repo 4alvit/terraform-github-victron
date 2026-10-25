@@ -49,6 +49,7 @@ locals {
     inverter_desktop = {
       name                        = "inverter-desktop"
       description                 = "Desktop version of Web dashboard for Victron inverter control with Home Assistant integration"
+      homepage_url                = "https://github.com/victron-venus/inverter-desktop/tree/main/docs"
       topics                      = ["battery", "cerbo-gx", "dashboard", "energy", "energy-management", "grid-tie", "hass", "home-assistant", "inverter", "mqtt", "power", "sensor", "solar", "venus-os", "victron", "web-dashboard"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
@@ -223,6 +224,7 @@ module "repos" {
 
   name                        = each.value.name
   description                 = each.value.description
+  homepage_url                = lookup(each.value, "homepage_url", null)
   has_issues                  = lookup(each.value, "has_issues", true)
   has_projects                = lookup(each.value, "has_projects", true)
   has_wiki                    = lookup(each.value, "has_wiki", true)
