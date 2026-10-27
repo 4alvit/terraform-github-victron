@@ -7,7 +7,7 @@
   "upstream_version": "6.13.0",
   "build_version": "6.13.0-openssf.2",
   "binary_name": "terraform-provider-github_v6.13.0",
-  "go_version": "go1.27.2",
+  "go_version": "go1.27.3",
   "govulncheck_version": "v1.9.0",
   "module_files": {
     "go.mod": "e7039dd31f9ee3a4067c197f5cc6010e3ceb0f0aa709f87d6b7ab73e0ca9cfd7",

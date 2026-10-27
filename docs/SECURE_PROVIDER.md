@@ -2,11 +2,11 @@
 
 The official GitHub provider 6.13.0 binary was built with Go 1.26.4 and its dependency scan contains older findings. Upstream currently offers no newer release that resolves them all. The checked-in default lock files still refer to that official binary; this change does not silently replace a production provider or alter infrastructure.
 
-For the supported independent local deployment profile, build the same upstream 6.13.0 source commit `20728bb30c112287ac3e8243cdb0307a45c6a0a0` with Go 1.27.2 and the exact reviewed module files under `security/provider/`. This derivative is labelled 6.13.0-openssf.2, retains its MPL 2.0 upstream license, and updates x/net 0.60.0, x/text 0.42.0, x/crypto 0.57.0 and grpc 1.83.2 along with required transitive versions. Revision 2 also updates go-jose from 4.1.4 to 4.1.6 for [GHSA-mgcc-cww5-fp2q](https://github.com/advisories/GHSA-mgcc-cww5-fp2q), preserving the other 66 requirements. The manifest pins the source archive and module-file hashes. It is a disclosed local derivative, not a claim that upstream has released a fixed binary.
+For the supported independent local deployment profile, build the same upstream 6.13.0 source commit `20728bb30c112287ac3e8243cdb0307a45c6a0a0` with Go 1.27.3 and the exact reviewed module files under `security/provider/`. This derivative is labelled 6.13.0-openssf.2, retains its MPL 2.0 upstream license, and updates x/net 0.60.0, x/text 0.42.0, x/crypto 0.57.0 and grpc 1.83.2 along with required transitive versions. Revision 2 also updates go-jose from 4.1.4 to 4.1.6 for [GHSA-mgcc-cww5-fp2q](https://github.com/advisories/GHSA-mgcc-cww5-fp2q), preserving the other 66 requirements. Its compiler is Go 1.27.3, which also addresses [GO-2026-6809](https://pkg.go.dev/vuln/GO-2026-6809) in certificate verification; source qualification rejected the former Go 1.27.2 compiler. The manifest pins the source archive and module-file hashes. It is a disclosed local derivative, not a claim that upstream has released a fixed binary.
 
 ## Reproduce the derivative
 
-Install Go 1.27.2 from its official distribution and verify its published checksum. Pass its actual executable path; setting GOTOOLCHAIN alone is insufficient proof of the selected compiler. Use a new output directory outside this checkout:
+Install Go 1.27.3 from its official distribution and verify its published checksum. Pass its actual executable path; setting GOTOOLCHAIN alone is insufficient proof of the selected compiler. Use a new output directory outside this checkout:
 
 ```sh
 python3 scripts/build_secure_provider.py --go /VERIFIED/go/bin/go \

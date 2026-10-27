@@ -185,7 +185,7 @@ def main():
     """Build and qualify a pinned, explicitly labelled derivative provider."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--go", required=True, type=Path, help="Verified Go 1.27.2 executable"
+        "--go", required=True, type=Path, help="Verified Go executable matching the snapshot manifest"
     )
     parser.add_argument(
         "--output", required=True, type=Path, help="New artifact directory"
