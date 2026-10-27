@@ -8,19 +8,27 @@ mock_provider "github" {
   }
 }
 
-run "review_requires_one_current_approval_without_bypass" {
+run "review_requires_one_current_approval_with_owner_exception" {
   command = plan
   assert {
     condition = alltrue([
       for policy in github_repository_ruleset.public_review : (
-        length(policy.bypass_actors) == 0 &&
+        (
+          length([for actor in policy.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
+          alltrue([
+            for actor in policy.bypass_actors :
+            coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+            if actor.actor_type == local.owner_emergency_merge_actor.actor_type
+          ]) &&
+          length([for actor in policy.bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
+        ) &&
         one(one(policy.rules).pull_request).required_approving_review_count == 1 &&
         one(one(policy.rules).pull_request).dismiss_stale_reviews_on_push &&
         one(one(policy.rules).pull_request).require_last_push_approval &&
         one(one(policy.rules).pull_request).required_review_thread_resolution
       )
     ])
-    error_message = "New public review rules must have no administrator/bot bypass and require current reviews."
+    error_message = "New public review rules must have only the owner emergency exception and require current reviews."
   }
 }
 
@@ -76,5 +84,17 @@ run "archived_repository_is_excluded" {
   assert {
     condition     = !contains(local.enforced_public_software_repositories, ".github") && !contains(local.active_public_software_repositories, ".github") && !contains(keys(github_repository_ruleset.public_review), ".github")
     error_message = "Do not change archived repository protections."
+  }
+}
+
+run "emergency_merge_is_limited_to_the_owner_and_pull_requests" {
+  command = plan
+  assert {
+    condition = (
+      local.owner_emergency_merge_actor.actor_type == "OrganizationAdmin" &&
+      local.owner_emergency_merge_actor.actor_id == null &&
+      local.owner_emergency_merge_actor.bypass_mode == "pull_request"
+    )
+    error_message = "Only the declared owner may use the emergency PR exception; repository roles, automation and direct pushes are not added."
   }
 }

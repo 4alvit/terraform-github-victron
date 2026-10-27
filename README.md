@@ -245,3 +245,7 @@ See the [supported TLS profile](docs/TLS_PROFILE.md), [assessment evidence](docs
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15573/badge)](https://www.bestpractices.dev/projects/15573)
 
 The [disclosed secure-provider profile](docs/SECURE_PROVIDER.md) builds a reviewed patched GitHub provider, validates an isolated source copy and supports a guarded independent local deployment with OpenTofu; production locks and state are not automatically changed. The [engine advisory assessment](docs/OPENTOFU_ADVISORIES.md) is dated and scoped.
+
+## Emergency merge authority
+
+Organization owners can use a [documented emergency exception](docs/public-security.md#emergency-owner-merges) through a pull request when necessary. Ordinary review and CI requirements remain; this grant does not authorize direct pushes or tag rewrites. Terraform must be applied to the canonical state and live rules verified before relying on it.
