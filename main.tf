@@ -467,11 +467,15 @@ resource "github_repository_ruleset" "default_remaining" {
     }
   }
 
-  # Owners may make an explicit emergency merge through an auditable PR.
-  bypass_actors {
-    actor_id    = local.owner_emergency_merge_actor.actor_id
-    actor_type  = local.owner_emergency_merge_actor.actor_type
-    bypass_mode = local.owner_emergency_merge_actor.bypass_mode
+  # Archived source stays read-only. All other listed repositories already have
+  # live metadata in public_software, so this also follows future archive changes.
+  dynamic "bypass_actors" {
+    for_each = (each.value == "venus-os-governance" ? github_repository.venus_os_governance.archived : data.github_repository.public_software[each.value].archived) ? [] : [local.owner_emergency_merge_actor]
+    content {
+      actor_id    = bypass_actors.value.actor_id
+      actor_type  = bypass_actors.value.actor_type
+      bypass_mode = bypass_actors.value.bypass_mode
+    }
   }
 
   conditions {
