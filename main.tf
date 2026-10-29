@@ -399,7 +399,7 @@ resource "github_repository_ruleset" "default" {
     }
   }
 
-  # Owners may make an explicit emergency merge through an auditable PR.
+  # Organization owners retain permanent branch recovery authority.
   bypass_actors {
     actor_id    = local.owner_emergency_merge_actor.actor_id
     actor_type  = local.owner_emergency_merge_actor.actor_type

@@ -54,7 +54,7 @@ run "public_protections_keep_publication_disabled" {
           length([for actor in gate.bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
           alltrue([
             for actor in gate.bypass_actors :
-            coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+            coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "always"
             if actor.actor_type == local.owner_emergency_merge_actor.actor_type
           ]) &&
           length([for actor in gate.bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 1
@@ -69,7 +69,7 @@ run "public_protections_keep_publication_disabled" {
         one(one(one(gate.rules).required_status_checks).required_check).context == "CI gate"
       )
     ])
-    error_message = "Branch gates must keep strict CI and allow only repository administrators to bypass via pull requests."
+    error_message = "Branch gates must retain strict CI, permanent owner bypass, and the existing administrator PR-only exception."
   }
   assert {
     condition     = length(github_repository_ruleset.immutable_release_tags["app"].bypass_actors) == 0
@@ -230,7 +230,7 @@ run "audited_public_ci_preserves_existing_policy_by_default" {
         length([for actor in github_repository_ruleset.release_quality_gate[".github"].bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
         alltrue([
           for actor in github_repository_ruleset.release_quality_gate[".github"].bypass_actors :
-          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "always"
           if actor.actor_type == local.owner_emergency_merge_actor.actor_type
         ]) &&
         length([for actor in github_repository_ruleset.release_quality_gate[".github"].bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 1
@@ -239,7 +239,7 @@ run "audited_public_ci_preserves_existing_policy_by_default" {
         length([for actor in github_repository_ruleset.release_quality_gate["inverter-control"].bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
         alltrue([
           for actor in github_repository_ruleset.release_quality_gate["inverter-control"].bypass_actors :
-          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+          coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "always"
           if actor.actor_type == local.owner_emergency_merge_actor.actor_type
         ]) &&
         length([for actor in github_repository_ruleset.release_quality_gate["inverter-control"].bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
@@ -260,7 +260,7 @@ run "explicitly_enforced_public_ci_has_owner_exception" {
       length([for actor in github_repository_ruleset.release_quality_gate[".github"].bypass_actors : actor if actor.actor_type == local.owner_emergency_merge_actor.actor_type]) == 1 &&
       alltrue([
         for actor in github_repository_ruleset.release_quality_gate[".github"].bypass_actors :
-        coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "pull_request"
+        coalesce(actor.actor_id, 0) == coalesce(local.owner_emergency_merge_actor.actor_id, 0) && actor.bypass_mode == "always"
         if actor.actor_type == local.owner_emergency_merge_actor.actor_type
       ]) &&
       length([for actor in github_repository_ruleset.release_quality_gate[".github"].bypass_actors : actor if actor.actor_type != local.owner_emergency_merge_actor.actor_type]) == 0
