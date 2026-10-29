@@ -89,6 +89,15 @@ Do not detach the existing HCP checkout and apply an empty local state against i
 
 Never commit credentials, private variable files, plan files or state files.
 
+Every managed repository enables `delete_branch_on_merge = true`, including the
+adopted website. The shared repository module rejects `false` and `null`; its
+mocked contract tests run in `scripts/test-release-governance.sh`. GitHub deletes
+eligible pull-request head branches after merge, subject to branch protection
+and rulesets. This does not remove local branches, worktrees or unmerged work.
+Source changes alone do not update GitHub: use the canonical workspace and verify
+the live setting after apply. An imported `false` value left in source would
+otherwise revert a manual GitHub correction on the next apply.
+
 ## Import Existing Resources
 
 The canonical workspace already tracks the existing resources. Do not re-import

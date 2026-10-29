@@ -1,4 +1,4 @@
-# Existing manually created infrastructure, adopted without changing its policy.
+# Existing manually created infrastructure with shared merged-branch cleanup.
 # Keep archived repository settings as observed.
 
 # This archived OSS project remains public by design; adoption preserves its visibility.
@@ -47,7 +47,7 @@ resource "github_repository" "website" {
   allow_squash_merge          = true
   allow_rebase_merge          = true
   allow_auto_merge            = false
-  delete_branch_on_merge      = false
+  delete_branch_on_merge      = true
   web_commit_signoff_required = false
   topics                      = []
 }

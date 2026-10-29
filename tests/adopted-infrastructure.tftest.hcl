@@ -14,9 +14,10 @@ run "adopt_existing_repository_policy" {
       github_repository.venus_os_governance.allow_auto_merge &&
       !github_repository.website.archived &&
       !github_repository.website.allow_auto_merge &&
-      !github_repository.website.delete_branch_on_merge
+      github_repository.website.delete_branch_on_merge &&
+      github_repository.venus_os_governance.delete_branch_on_merge
     )
-    error_message = "Adoption must retain the archived repository and existing website merge settings."
+    error_message = "Adoption must retain archival and auto-merge settings while enabling merged-branch cleanup."
   }
 
 }

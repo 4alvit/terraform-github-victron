@@ -72,6 +72,11 @@ variable "delete_branch_on_merge" {
   description = "Delete branch on merge"
   type        = bool
   default     = true
+
+  validation {
+    condition     = var.delete_branch_on_merge == true
+    error_message = "Managed repositories must enable automatic deletion of merged pull-request branches."
+  }
 }
 
 variable "topics" {
