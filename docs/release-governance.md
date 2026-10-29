@@ -95,8 +95,10 @@ production deployment; stable deployment remains a separate explicit operation.
 The additive required CI ruleset grants repository administrators (role ID 5)
 a `pull_request` bypass on active public repositories. Administrators may
 explicitly override CI when merging a PR; ordinary merges still require a
-successful strict `CI gate`. This grant does not permit direct pushes and is not
-added to archived repositories. Release approval remains independent.
+successful strict `CI gate`. This role-based grant remains limited to pull
+requests and is not added to archived repositories. Organization owners
+separately receive permanent branch bypass, including direct updates and history
+repair. Release approval and immutable tag rules remain independent.
 
 ## CI source bindings and reusable workflow pins
 

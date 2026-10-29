@@ -111,12 +111,13 @@ are not an import checklist for the canonical workspace.
 
 The additive `Release standard - required CI gate` keeps strict CI requirements
 for normal merges. Repository administrators (role ID 5) can explicitly bypass
-this gate when merging a pull request. The `pull_request` bypass does not allow
-direct pushes. Archived repositories retain their existing rules without a new
-bypass grant.
+this gate when merging a pull request. That existing role-based exception stays
+limited to pull requests. Organization owners separately have permanent branch
+bypass through the shared owner policy. Archived repositories retain their
+existing rules without a new bypass grant.
 
-The separate default review ruleset and release-environment approval policy
-retain their existing settings. Immutable version tags remain protected.
+Other review requirements and the release-environment approval policy retain
+their existing settings. Immutable version tags remain protected.
 
 ## Adopted infrastructure
 
@@ -246,6 +247,6 @@ See the [supported TLS profile](docs/TLS_PROFILE.md), [assessment evidence](docs
 
 The [disclosed secure-provider profile](docs/SECURE_PROVIDER.md) builds a reviewed patched GitHub provider, validates an isolated source copy and supports a guarded independent local deployment with OpenTofu; production locks and state are not automatically changed. The [engine advisory assessment](docs/OPENTOFU_ADVISORIES.md) is dated and scoped.
 
-## Emergency merge authority
+## Permanent owner authority
 
-Organization owners can use a [documented emergency exception](docs/public-security.md#emergency-owner-merges) through a pull request when necessary. Ordinary review and CI requirements remain; this grant does not authorize direct pushes or tag rewrites. Terraform must be applied to the canonical state and live rules verified before relying on it.
+Organization owners have a [permanent branch bypass](docs/public-security.md#permanent-owner-bypass), including direct updates and history repair. Configured review and CI requirements remain for actors without an applicable bypass, and immutable tag rules are unchanged. Terraform must be applied to the canonical state and live rules verified before relying on it.
