@@ -26,7 +26,8 @@ test_terraform test -no-color
 module_temporary="$temporary/repository-module"
 mkdir -p "$module_temporary/tests"
 cp modules/github_repo/*.tf "$module_temporary/"
-cp .terraform.lock.hcl "$module_temporary/"
+# Reuse the checksums verified by the first init for this runner's platform.
+cp "$temporary/.terraform.lock.hcl" "$module_temporary/"
 cp tests/branch-cleanup-module.tftest.hcl "$module_temporary/tests/"
 env -i PATH="$PATH" HOME="$temporary" TF_IN_AUTOMATION=1 TF_INPUT=0 \
   TF_CLI_CONFIG_FILE="$temporary/empty.tfrc" TF_PLUGIN_CACHE_DIR="$temporary/provider-cache" \
