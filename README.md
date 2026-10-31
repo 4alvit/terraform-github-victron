@@ -131,12 +131,14 @@ their existing settings. Immutable version tags remain protected.
 ## Adopted infrastructure
 
 `adopted-infrastructure.tf` and `adopted-imports.tf` record the existing archived
-`venus-os-governance` repository, the root redirect repository, two GitHub Pages
-sites and environments, their four deployment branch policies, and the active monitoring
-webhook. The archived default
-branch ruleset is managed with the other default rulesets. These imports retain
-the live configuration, including the website default branch `feature/redirect`
-and Pages source `main`; they do not unarchive code.
+`venus-os-governance` repository, the organization website, two GitHub Pages
+sites and environments, their four deployment branch policies, and the active
+monitoring webhook. The archived default branch ruleset is managed with the
+other default rulesets. The website now uses `main` as both its managed default
+branch and its existing Pages source. The earlier `feature/redirect` Git
+history remains intact; changing the default branch does not rewrite it or
+change the Pages URL. Other imported settings remain unchanged, and archived
+code is not unarchived.
 The topic lists in `main.tf` also preserve the values observed on GitHub.
 
 The five disabled standalone Copilot rulesets were retired to reduce the HCP
