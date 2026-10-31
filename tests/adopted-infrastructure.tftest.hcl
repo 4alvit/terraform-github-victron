@@ -26,6 +26,15 @@ run "adopt_existing_pages_policy" {
   command = plan
 
   assert {
+    condition = (
+      github_branch_default.website.repository == github_repository.website.name &&
+      github_branch_default.website.branch == "main" &&
+      github_branch_default.website.branch == github_repository_pages.existing["victron-venus.github.io"].source[0].branch
+    )
+    error_message = "The website default branch and existing Pages source must stay aligned on main."
+  }
+
+  assert {
     condition = length(github_repository_pages.existing) == 2 && alltrue([
       for site in github_repository_pages.existing :
       site.build_type == "legacy" && site.public && site.source[0].branch == "main" && site.source[0].path == "/"

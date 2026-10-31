@@ -29,14 +29,14 @@ resource "github_repository" "venus_os_governance" {
   topics                      = ["approval-gates", "cerbo-gx", "dbus", "governance", "inverter-control", "policy-engine", "python", "soc-limits", "venus-os", "victron"]
 }
 
-# This public root-domain redirect contains only index.html, README.md and .nojekyll.
-# Preserve its existing disabled vulnerability alerts: it has no dependency manifests.
-# These exceptions adopt the verified live settings without changing other repositories.
+# The root-domain redirect became the organization website in October 2026.
+# Align its default branch with the existing Pages source without changing
+# publication settings or unrelated repository settings.
 # trivy:ignore:AVD-GIT-0001
 # trivy:ignore:AVD-GIT-0003
 resource "github_repository" "website" {
   name                        = "victron-venus.github.io"
-  description                 = "Root-domain redirect — real site lives in victron-venus/.github"
+  description                 = "Organization website and public project catalog"
   visibility                  = "public"
   archived                    = false
   has_issues                  = true
@@ -50,6 +50,11 @@ resource "github_repository" "website" {
   delete_branch_on_merge      = true
   web_commit_signoff_required = false
   topics                      = []
+}
+
+resource "github_branch_default" "website" {
+  repository = github_repository.website.name
+  branch     = "main"
 }
 
 locals {

@@ -10,6 +10,12 @@ import {
   id = "victron-venus.github.io"
 }
 
+# Adopt the existing default-branch setting before updating it to main.
+import {
+  to = github_branch_default.website
+  id = "victron-venus.github.io"
+}
+
 import {
   to = github_repository_ruleset.default_remaining["venus-os-governance"]
   id = "venus-os-governance:20199488"
