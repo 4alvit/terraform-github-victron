@@ -257,7 +257,9 @@ exception and excludes private or archived repositories. Its existing repository
 resource is reused; it is not enrolled in application release channels. Apply
 the reviewed Terraform plan and verify the live rules before relying on this
 protection. `gh pr merge --auto` can merge immediately when no required rules
-exist, so always inspect exact-head checks before requesting a merge.
+exist, so always inspect exact-head checks before requesting a merge. See the
+[scoped post-apply verification](docs/ethernet-governance.md) for the exact
+ruleset identity and the provider's unsupported extra-approval flag.
 
 ## Maintenance and verified operation
 
