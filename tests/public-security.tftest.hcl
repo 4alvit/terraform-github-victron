@@ -98,3 +98,58 @@ run "permanent_branch_bypass_is_limited_to_the_owner" {
     error_message = "Only the declared organization owner receives permanent branch bypass; no repository-role or automation grants are added."
   }
 }
+
+run "ethernet_requires_review_and_its_real_checks" {
+  command = plan
+  assert {
+    condition = (
+      length(github_repository_ruleset.emporia_vue2_governance) == 1 &&
+      github_repository_ruleset.emporia_vue2_governance[0].repository == "esphome-emporia-vue2-ethernet" &&
+      github_repository_ruleset.emporia_vue2_governance[0].enforcement == "active" &&
+      length(github_repository_ruleset.emporia_vue2_governance[0].bypass_actors) == 1 &&
+      one(github_repository_ruleset.emporia_vue2_governance[0].bypass_actors).actor_type == "OrganizationAdmin" &&
+      one(github_repository_ruleset.emporia_vue2_governance[0].bypass_actors).bypass_mode == "always" &&
+      one(one(github_repository_ruleset.emporia_vue2_governance[0].rules).pull_request).required_approving_review_count == 1 &&
+      one(one(github_repository_ruleset.emporia_vue2_governance[0].rules).pull_request).dismiss_stale_reviews_on_push &&
+      one(one(github_repository_ruleset.emporia_vue2_governance[0].rules).pull_request).require_last_push_approval &&
+      one(one(github_repository_ruleset.emporia_vue2_governance[0].rules).pull_request).required_review_thread_resolution &&
+      one(one(github_repository_ruleset.emporia_vue2_governance[0].rules).required_status_checks).strict_required_status_checks_policy &&
+      { for check in one(one(github_repository_ruleset.emporia_vue2_governance[0].rules).required_status_checks).required_check : check.context => check.integration_id } == {
+        "Documentation and examples"           = 15368
+        "ESPHome configuration and generation" = 15368
+        "CodeQL"                               = 57789
+      }
+    )
+    error_message = "Ethernet changes require current review, owner-only recovery and exactly the three real qualified checks."
+  }
+}
+
+run "ethernet_private_repository_is_excluded" {
+  command = plan
+  override_data {
+    target = data.github_repository.emporia_vue2_governance
+    values = {
+      visibility = "private"
+      archived   = false
+    }
+  }
+  assert {
+    condition     = length(github_repository_ruleset.emporia_vue2_governance) == 0
+    error_message = "Do not create public governance rules for a private Ethernet repository."
+  }
+}
+
+run "ethernet_archived_repository_is_excluded" {
+  command = plan
+  override_data {
+    target = data.github_repository.emporia_vue2_governance
+    values = {
+      visibility = "public"
+      archived   = true
+    }
+  }
+  assert {
+    condition     = length(github_repository_ruleset.emporia_vue2_governance) == 0
+    error_message = "Do not create new rules for an archived Ethernet repository."
+  }
+}
