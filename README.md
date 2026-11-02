@@ -250,6 +250,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for bug reports, proposed changes and tes
 secret protection and rollout/state ownership. OpenSSF readiness is assessed
 for this infrastructure repository separately from the projects it manages.
 
+`esphome-emporia-vue2-ethernet` has a dedicated ruleset in
+`emporia-vue2-governance.tf`: one current review plus its documentation,
+firmware-generation and CodeQL checks. It keeps the organization-owner recovery
+exception and excludes private or archived repositories. Its existing repository
+resource is reused; it is not enrolled in application release channels. Apply
+the reviewed Terraform plan and verify the live rules before relying on this
+protection. `gh pr merge --auto` can merge immediately when no required rules
+exist, so always inspect exact-head checks before requesting a merge.
+
 ## Maintenance and verified operation
 
 See the [supported TLS profile](docs/TLS_PROFILE.md), [assessment evidence](docs/openssf-evidence.md), [governance](GOVERNANCE.md), [Code of Conduct](CODE_OF_CONDUCT.md), and [one-year roadmap](ROADMAP.md).
