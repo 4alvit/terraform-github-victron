@@ -123,6 +123,17 @@ resource "github_repository_ruleset" "release_quality_gate" {
   rules {
     deletion         = true
     non_fast_forward = true
+    # The organization website has no separate default-branch review policy.
+    # Extend its existing gate without changing its checks or bypass actors.
+    dynamic "pull_request" {
+      for_each = each.key == "victron-venus.github.io" && !data.github_repository.release_standard[each.key].archived ? [true] : []
+      content {
+        required_approving_review_count   = 1
+        dismiss_stale_reviews_on_push     = true
+        require_last_push_approval        = true
+        required_review_thread_resolution = true
+      }
+    }
     required_status_checks {
       strict_required_status_checks_policy = true
       do_not_enforce_on_create             = false

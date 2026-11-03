@@ -268,3 +268,60 @@ run "explicitly_enforced_public_ci_has_owner_exception" {
     error_message = "Audited public CI allows only the explicit owner exception."
   }
 }
+
+
+run "website_requires_review_without_changing_existing_gate_or_bypass" {
+  command = plan
+  variables {
+    release_gate_repositories = ["victron-venus.github.io", "app"]
+  }
+  assert {
+    condition = (
+      one(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).pull_request).required_approving_review_count == 1 &&
+      one(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).pull_request).dismiss_stale_reviews_on_push &&
+      one(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).pull_request).require_last_push_approval &&
+      one(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).pull_request).required_review_thread_resolution &&
+      one(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).required_status_checks).strict_required_status_checks_policy &&
+      { for check in one(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).required_status_checks).required_check : check.context => check.integration_id } == { "CI gate" = 15368 } &&
+      github_repository_ruleset.release_quality_gate["victron-venus.github.io"].bypass_actors == github_repository_ruleset.release_quality_gate["app"].bypass_actors &&
+      length(one(github_repository_ruleset.release_quality_gate["app"].rules).pull_request) == 0
+    )
+    error_message = "Only the website gains one current review; its strict CI and existing owner/administrator exceptions must remain unchanged."
+  }
+}
+
+run "website_private_is_excluded" {
+  command = plan
+  variables {
+    release_gate_repositories = ["victron-venus.github.io"]
+  }
+  override_data {
+    target = data.github_repository.release_standard["victron-venus.github.io"]
+    values = {
+      visibility = "private"
+      archived   = false
+    }
+  }
+  assert {
+    condition     = !contains(keys(github_repository_ruleset.release_quality_gate), "victron-venus.github.io")
+    error_message = "Private website metadata must not receive public release policy."
+  }
+}
+
+run "website_archived_does_not_gain_review" {
+  command = plan
+  variables {
+    release_gate_repositories = ["victron-venus.github.io"]
+  }
+  override_data {
+    target = data.github_repository.release_standard["victron-venus.github.io"]
+    values = {
+      visibility = "public"
+      archived   = true
+    }
+  }
+  assert {
+    condition     = length(one(github_repository_ruleset.release_quality_gate["victron-venus.github.io"].rules).pull_request) == 0
+    error_message = "Archived website policy must not gain new review enforcement."
+  }
+}
