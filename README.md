@@ -25,7 +25,7 @@ See [CI and deployment workflow](docs/release-workflow.md) for required checks a
   - `esphome-jbd-bms-mqtt`
 - **Repository settings**: topics, visibility, merge options
 - **Branch protection rules**: required status checks
-- **Security features**: Dependabot, secret scanning, vulnerability alerts
+- **Security features**: secret scanning, vulnerability alerts, and explicitly disabled Dependabot update PRs
 - **GitHub Actions secrets**
 
 ## Prerequisites
@@ -194,7 +194,7 @@ terraform-github-victron/
 
 - **Organization creation** must be done manually (Terraform can only manage existing orgs)
 - **Repository content** (code, commits) is not managed by Terraform
-- **Dependabot config files** (`.github/dependabot.yml`) are in the repos, not Terraform
+- **Renovate configuration** (`renovate.json`) lives in each repository; Terraform keeps the legacy Dependabot security-update setting disabled
 - **GitHub Actions workflows** are stored in repos, not managed here
 
 ## Destroying Infrastructure
