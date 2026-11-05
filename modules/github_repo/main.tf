@@ -156,7 +156,7 @@ resource "github_repository_vulnerability_alerts" "this" {
 resource "github_repository_dependabot_security_updates" "this" {
   count      = var.dependabot_security_updates ? 1 : 0
   repository = github_repository.this.id
-  enabled    = true
+  enabled    = false
 }
 
 output "name" {
