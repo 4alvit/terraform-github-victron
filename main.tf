@@ -371,10 +371,6 @@ locals {
   ]
 }
 
-data "github_app" "gitar" {
-  slug = "gitar-bot"
-}
-
 resource "github_repository_ruleset" "default" {
   name        = "Default"
   repository  = "inverter-desktop"
@@ -387,14 +383,6 @@ resource "github_repository_ruleset" "default" {
     content {
       actor_id    = 5
       actor_type  = "RepositoryRole"
-      bypass_mode = "always"
-    }
-  }
-  dynamic "bypass_actors" {
-    for_each = contains(local.enforced_public_software_repositories, "inverter-desktop") ? [] : [true]
-    content {
-      actor_id    = data.github_app.gitar.id
-      actor_type  = "Integration"
       bypass_mode = "always"
     }
   }
@@ -454,15 +442,6 @@ resource "github_repository_ruleset" "default_remaining" {
     content {
       actor_id    = 5
       actor_type  = "RepositoryRole"
-      bypass_mode = "always"
-    }
-  }
-
-  dynamic "bypass_actors" {
-    for_each = each.value == "inverter-control" || contains(local.enforced_public_software_repositories, each.value) ? [] : [true]
-    content {
-      actor_id    = data.github_app.gitar.id
-      actor_type  = "Integration"
       bypass_mode = "always"
     }
   }
