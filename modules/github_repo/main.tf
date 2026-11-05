@@ -98,7 +98,7 @@ variable "vulnerability_alerts" {
 }
 
 variable "dependabot_security_updates" {
-  description = "Enable Dependabot security updates"
+  description = "Keep the legacy Dependabot update resource managed and explicitly disabled"
   type        = bool
   default     = false
 }
