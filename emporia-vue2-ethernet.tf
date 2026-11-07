@@ -3,5 +3,5 @@
 resource "github_workflow_repository_permissions" "emporia_vue2_ethernet" {
   repository                       = module.repos["esphome_emporia_vue2_ethernet"].name
   default_workflow_permissions     = "read"
-  can_approve_pull_request_reviews = false
+  can_approve_pull_request_reviews = true
 }
