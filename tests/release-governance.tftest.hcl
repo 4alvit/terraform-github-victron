@@ -19,6 +19,14 @@ mock_provider "github" {
   }
 }
 
+override_resource {
+  target          = github_repository_pages.docs_portal
+  override_during = plan
+  values = {
+    public = true
+  }
+}
+
 run "empty_defaults_do_not_manage_repositories" {
   command = plan
   assert {
