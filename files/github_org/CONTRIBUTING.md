@@ -18,7 +18,7 @@ Each repository owns its code, issues, and releases. Pick the repo that matches 
 - **Vehicle and water bridges** → [dbus-ev](https://github.com/victron-venus/dbus-ev) or [dbus-pump](https://github.com/victron-venus/dbus-pump)
 - **Org / Terraform** → [terraform-github-victron](https://github.com/4alvit/terraform-github-victron); organization profile, catalog and website documentation belong here
 
-See the [public project catalog](https://victron-venus.github.io/.github/projects.html) for the remaining tools.
+See the [public project catalog](https://victron-venus.github.io/#projects) for the remaining tools.
 
 Before adding a cross-project reference, verify that its repository is public and
 link to its current owner and maintained implementation. Do not publish names,

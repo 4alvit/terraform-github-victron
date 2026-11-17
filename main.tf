@@ -35,6 +35,7 @@ locals {
     inverter_dashboard = {
       name                        = "inverter-dashboard"
       description                 = "Real-time web dashboard for Victron inverter monitoring via MQTT"
+      has_wiki                    = true
       topics                      = ["cerbo-gx", "dashboard", "docker", "fastapi", "mqtt", "python", "real-time", "uplot", "venus-os", "victron", "vue", "websocket"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
@@ -42,6 +43,7 @@ locals {
     inverter_dashboard_go = {
       name                        = "inverter-dashboard-go"
       description                 = "Real-time Victron inverter web dashboard (Go) — same role as inverter-dashboard, implemented in Go with MQTT and optional Home Assistant direct control"
+      has_wiki                    = true
       topics                      = ["battery", "cerbo-gx", "dashboard", "docker", "energy", "go", "golang", "hass", "home-assistant", "inverter", "mqtt", "power", "real-time", "sensor", "solar", "venus-os", "victron", "websocket"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
@@ -78,6 +80,7 @@ locals {
     inverter_dashboard_vue = {
       name                        = "inverter-dashboard-vue"
       description                 = "Shared Vue 3 frontend SPA and reusable UI component library for Victron dashboards"
+      has_wiki                    = true
       topics                      = ["dashboard", "echarts", "mqtt", "tailwindcss", "typescript", "venus-os", "victron", "vue", "vue3", "vite"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
@@ -203,6 +206,7 @@ locals {
     dbus_pump = {
       name                        = "dbus-pump"
       description                 = "Home-Assistant-backed water tank/pump/valve bridge for Victron Venus OS (Cerbo GX)"
+      has_wiki                    = true
       topics                      = ["cerbo-gx", "dbus", "home-assistant", "mqtt", "python", "venus-os", "victron", "water-management"]
       vulnerability_alerts        = true
       dependabot_security_updates = true
@@ -222,12 +226,14 @@ module "repos" {
   source                 = "./modules/github_repo"
   for_each               = local.repositories
 
-  name                        = each.value.name
-  description                 = each.value.description
-  homepage_url                = lookup(each.value, "homepage_url", null)
-  has_issues                  = lookup(each.value, "has_issues", true)
-  has_projects                = lookup(each.value, "has_projects", true)
-  has_wiki                    = lookup(each.value, "has_wiki", true)
+  name         = each.value.name
+  description  = each.value.description
+  homepage_url = lookup(each.value, "homepage_url", null)
+  has_issues   = lookup(each.value, "has_issues", true)
+  has_projects = lookup(each.value, "has_projects", true)
+  # Wikis are off by default: a repo gets one only when its wiki is a maintained
+  # source of truth. Set has_wiki = true on that repository explicitly.
+  has_wiki                    = lookup(each.value, "has_wiki", false)
   has_discussions             = lookup(each.value, "has_discussions", false)
   allow_merge_commit          = lookup(each.value, "allow_merge_commit", true)
   allow_squash_merge          = lookup(each.value, "allow_squash_merge", true)
