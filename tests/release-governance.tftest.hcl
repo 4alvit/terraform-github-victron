@@ -41,6 +41,37 @@ run "empty_defaults_do_not_manage_repositories" {
   }
 }
 
+run "documentation_portal_requires_ci_without_release_channels" {
+  command = plan
+
+  variables {
+    release_gate_repositories = ["docs-portal"]
+  }
+
+  assert {
+    condition = (
+      length(github_repository_ruleset.release_quality_gate) == 1 &&
+      github_repository_ruleset.release_quality_gate["docs-portal"].repository == "docs-portal" &&
+      one(one(github_repository_ruleset.release_quality_gate["docs-portal"].rules).required_status_checks).strict_required_status_checks_policy &&
+      !one(one(github_repository_ruleset.release_quality_gate["docs-portal"].rules).required_status_checks).do_not_enforce_on_create &&
+      one(one(one(github_repository_ruleset.release_quality_gate["docs-portal"].rules).required_status_checks).required_check).context == "CI gate" &&
+      one(one(one(github_repository_ruleset.release_quality_gate["docs-portal"].rules).required_status_checks).required_check).integration_id == 15368
+    )
+    error_message = "The portal must require the strict GitHub Actions CI gate, not an unbound check name."
+  }
+
+  assert {
+    condition = (
+      length(local.release_protected_channel_repositories) == 0 &&
+      length(github_repository_ruleset.immutable_release_tags) == 0 &&
+      length(github_repository_environment.release_standard) == 0 &&
+      length(github_repository_environment_deployment_policy.release_standard) == 0 &&
+      length(github_actions_variable.release_publication_enabled) == 0
+    )
+    error_message = "Requiring portal CI must not enable release channels, version tags, release environments, or publication variables."
+  }
+}
+
 run "public_protections_keep_publication_disabled" {
   command = plan
   variables {
