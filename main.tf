@@ -218,6 +218,14 @@ locals {
       vulnerability_alerts        = true
       dependabot_security_updates = true
     }
+    docs_portal = {
+      name                        = "docs-portal"
+      description                 = "Generated documentation portal aggregating every project repository"
+      homepage_url                = "https://victron-venus.github.io/docs/"
+      topics                      = ["documentation", "mkdocs", "venus-os", "victron"]
+      vulnerability_alerts        = true
+      dependabot_security_updates = true
+    }
   }
 }
 
@@ -374,6 +382,7 @@ locals {
     "SetupHelper",
     "dbus-pump",
     "dbus-ev",
+    "docs-portal",
   ]
 }
 

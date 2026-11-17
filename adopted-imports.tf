@@ -10,6 +10,13 @@ import {
   id = "victron-venus.github.io"
 }
 
+# The portal repository was created ahead of this configuration; adopt it so the
+# module manages it instead of proposing a create.
+import {
+  to = module.repos["docs_portal"].github_repository.this
+  id = "docs-portal"
+}
+
 # Adopt the existing default-branch setting before updating it to main.
 import {
   to = github_branch_default.website

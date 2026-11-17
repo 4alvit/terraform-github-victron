@@ -95,6 +95,14 @@ resource "github_repository_pages" "existing" {
   }
 }
 
+# The documentation portal is built by its own workflow and published with the
+# Pages artifact API, so it has no branch or path source.
+resource "github_repository_pages" "docs_portal" {
+  repository = module.repos["docs_portal"].name
+  build_type = "workflow"
+  public     = true
+}
+
 resource "github_repository_environment" "github_pages" {
   for_each          = local.pages_repositories
   repository        = each.key

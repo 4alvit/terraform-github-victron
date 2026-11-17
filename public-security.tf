@@ -18,6 +18,7 @@ locals {
     "dbus-pump",
     "dbus-tasmota-pv",
     "dbus-virtual-battery",
+    "docs-portal",
     "esphome-jbd-bms-mqtt",
     "integration-tests",
     "inverter-climate",
