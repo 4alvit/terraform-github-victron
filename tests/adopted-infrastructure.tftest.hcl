@@ -5,6 +5,16 @@ variables {
 
 mock_provider "github" {}
 
+# Model the public visibility observed by the provider, rather than configuring it.
+override_resource {
+  target = github_repository_pages.docs_portal
+
+  override_during = plan
+  values = {
+    public = true
+  }
+}
+
 run "documentation_portal_uses_workflow_pages" {
   command = plan
 
@@ -18,6 +28,21 @@ run "documentation_portal_uses_workflow_pages" {
     )
     error_message = "The documentation portal must publish workflow artifacts without a branch/path source."
   }
+}
+
+run "reject_private_documentation_portal_pages" {
+  command = plan
+
+  override_resource {
+    target = github_repository_pages.docs_portal
+
+    override_during = plan
+    values = {
+      public = false
+    }
+  }
+
+  expect_failures = [github_repository_pages.docs_portal]
 }
 
 run "adopt_existing_repository_policy" {

@@ -100,7 +100,15 @@ resource "github_repository_pages" "existing" {
 resource "github_repository_pages" "docs_portal" {
   repository = module.repos["docs_portal"].name
   build_type = "workflow"
-  public     = true
+
+  # Observe visibility without sending an unsupported visibility update here.
+  # The provider can create the public site before that update returns HTTP 400.
+  lifecycle {
+    postcondition {
+      condition     = self.public == true
+      error_message = "The documentation portal Pages site must remain publicly visible."
+    }
+  }
 }
 
 resource "github_repository_environment" "github_pages" {
