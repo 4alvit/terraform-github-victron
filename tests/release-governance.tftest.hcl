@@ -20,7 +20,8 @@ mock_provider "github" {
 }
 
 override_resource {
-  target          = github_repository_pages.docs_portal
+  target = github_repository_pages.docs_portal
+
   override_during = plan
   values = {
     public = true

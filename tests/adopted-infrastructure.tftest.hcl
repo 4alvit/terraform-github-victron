@@ -7,7 +7,8 @@ mock_provider "github" {}
 
 # Model the public visibility observed by the provider, rather than configuring it.
 override_resource {
-  target          = github_repository_pages.docs_portal
+  target = github_repository_pages.docs_portal
+
   override_during = plan
   values = {
     public = true
@@ -33,7 +34,8 @@ run "reject_private_documentation_portal_pages" {
   command = plan
 
   override_resource {
-    target          = github_repository_pages.docs_portal
+    target = github_repository_pages.docs_portal
+
     override_during = plan
     values = {
       public = false
