@@ -5,6 +5,21 @@ variables {
 
 mock_provider "github" {}
 
+run "documentation_portal_uses_workflow_pages" {
+  command = plan
+
+  assert {
+    condition = (
+      github_repository_pages.docs_portal.repository == module.repos["docs_portal"].name &&
+      github_repository_pages.docs_portal.repository == "docs-portal" &&
+      github_repository_pages.docs_portal.build_type == "workflow" &&
+      github_repository_pages.docs_portal.public &&
+      length(github_repository_pages.docs_portal.source) == 0
+    )
+    error_message = "The documentation portal must publish workflow artifacts without a branch/path source."
+  }
+}
+
 run "adopt_existing_repository_policy" {
   command = plan
 
