@@ -14,3 +14,11 @@ variable "github_organization" {
   type    = string
   default = "release-contract-fixture"
 }
+
+# Exercise the production Pages reference against the real repository module.
+module "repos" {
+  source      = "../../modules/github_repo"
+  for_each    = toset(["docs_portal"])
+  name        = "docs-portal"
+  description = "Documentation portal fixture"
+}
