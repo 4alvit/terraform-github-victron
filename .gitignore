@@ -38,3 +38,4 @@ main.tf.bak
 # Generated Python CI helper caches
 __pycache__/
 *.py[cod]
+A*S.md
